@@ -8,6 +8,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.views.client_login import login_router
 from app.views.gank_api import gank_router
 from app.settings import error_code
+import app.models.user_info
 
 app = FastAPI()
 app.include_router(login_router)
