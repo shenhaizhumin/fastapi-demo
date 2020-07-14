@@ -7,7 +7,7 @@ from app.util.token_util import create_access_token
 from app.response import BaseResponse, BaseError
 from app.util.cache_util import Cache
 from app.settings import tokenUrl
-from app.models.user_info import user_info
+from app.models.user_info import UserInfo
 from app.database import get_db
 from sqlalchemy.orm import Session
 
@@ -47,7 +47,7 @@ async def logout(user=Depends(get_current_user)):
 
 @login_router.put('/addUser')
 async def add(user: User, db: Session = Depends(get_db)):
-    userInfo = user_info()
+    userInfo = UserInfo()
     userInfo.username = user.username
     db.add(userInfo)
     db.commit()
@@ -56,5 +56,5 @@ async def add(user: User, db: Session = Depends(get_db)):
 
 @login_router.get('/allUser')
 async def getAll(db: Session = Depends(get_db)):
-    list = db.query(user_info).all()
+    list = db.query(UserInfo).all()
     return BaseResponse(data=list)

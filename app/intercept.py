@@ -36,7 +36,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     except PyJWTError:
         raise credentials_exception
 
-    user = UserInfo(uid, username, '')
+    user = UserInfo()
     if user is None:
         raise credentials_exception
     return user
