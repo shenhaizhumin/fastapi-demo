@@ -13,6 +13,7 @@ Base.metadata.create_all(bind=engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
+print("create_all")
 
 def get_db_session():
     return session

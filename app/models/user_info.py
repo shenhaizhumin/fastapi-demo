@@ -10,3 +10,6 @@ class UserInfo(Base):
     # def create(self, **kwargs):
     #     for k, v in kwargs:
     #         self.__setattr__(k, v)
+
+
+print("userinfo")
