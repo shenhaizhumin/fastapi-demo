@@ -8,7 +8,7 @@ from app.response import BaseResponse, BaseError
 from app.util.cache_util import Cache
 from app.settings import tokenUrl
 from app.models.user_info import UserInfo
-from app.database import get_db
+from app.models import get_db
 from sqlalchemy.orm import Session
 
 login_router = APIRouter()
