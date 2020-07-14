@@ -1,4 +1,4 @@
-from . import Base
+from . import Base, engine
 from sqlalchemy import Integer, String, SMALLINT, Column
 
 
@@ -13,3 +13,5 @@ class UserInfo(Base):
 
 
 print("userinfo")
+# 建表
+Base.metadata.create_all(bind=engine)
