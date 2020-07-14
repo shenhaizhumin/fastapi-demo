@@ -41,3 +41,7 @@ jwt_options = {
     'verify_iat': True,
     'verify_aud': False
 }
+
+test_db = dict()
+for k in conf.options('db.test'):
+    test_db[k] = conf.get('db.test', k)

@@ -8,3 +8,7 @@ class PasswordRequestForm(OAuth2PasswordRequestForm):
         self.username = username
         self.password = password
         self.mobile_captcha = mobile_captcha
+
+
+class User(BaseModel):
+    username: str

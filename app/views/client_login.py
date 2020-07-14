@@ -2,19 +2,22 @@ from fastapi import APIRouter, Depends, Form, Query
 from app.intercept import get_current_user
 from datetime import timedelta
 from app.settings import ACCESS_TOKEN_EXPIRE_MINUTES
-from app.schema.login_schema import PasswordRequestForm
+from app.schema.login_schema import PasswordRequestForm, User
 from app.util.token_util import create_access_token
 from app.response import BaseResponse, BaseError
 from app.util.cache_util import Cache
 from app.settings import tokenUrl
+from app.models.user_info import user_info
+from app.database import get_db
+from sqlalchemy.orm import Session
 
 login_router = APIRouter()
 cache = Cache()
 
 
 @login_router.post('/client/get')
-async def get( x: str = Form(...)):
-    return "hello world {}".format( x)
+async def get(x: str = Form(...)):
+    return "hello world {}".format(x)
 
 
 @login_router.post(tokenUrl)
@@ -40,3 +43,18 @@ async def login(schema: PasswordRequestForm = Depends()):
 async def logout(user=Depends(get_current_user)):
     await cache.delete_account_session(user.username, user.user_id)
     return BaseResponse()
+
+
+@login_router.put('/addUser')
+async def add(user: User, db: Session = Depends(get_db)):
+    userInfo = user_info()
+    userInfo.username = user.username
+    db.add(userInfo)
+    db.commit()
+    return BaseResponse(data=user)
+
+
+@login_router.get('/allUser')
+async def getAll(db: Session = Depends(get_db)):
+    list = db.query(user_info).all()
+    return BaseResponse(data=list)
