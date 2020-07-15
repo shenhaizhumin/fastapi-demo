@@ -9,11 +9,10 @@ engine = create_engine(uri)
 metadata = MetaData(bind=engine)
 Base = declarative_base(bind=engine)
 # 建表
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-print("create_all")
 
 def get_db_session():
     return session

@@ -20,7 +20,7 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
         expire = datetime.utcnow() + timedelta(minutes=60 * 24)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    return encoded_jwt.decode('utf8')
 
 
 def generate_hash_password(password: str):

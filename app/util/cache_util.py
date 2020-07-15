@@ -22,3 +22,10 @@ class Cache:
 
 def get_token_key(username: str, uid: str):
     return '{}_{}'.format(username, uid)
+
+
+def create_user_data(username: str, uid: str):
+    return {
+        'username': username,
+        'uid': uid
+    }

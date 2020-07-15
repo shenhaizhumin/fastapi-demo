@@ -8,18 +8,19 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.views.client_login import login_router
 from app.views.gank_api import gank_router
 from app.settings import error_code
-import app.models.user_info
+from app.views.user_views import user_router
 
 app = FastAPI()
 app.include_router(login_router)
 app.include_router(gank_router)
+app.include_router(user_router)
 
 
 @app.exception_handler(BaseError)
 async def unicorn_exception_handler(request: Request, exc: BaseError):
     return JSONResponse(
         status_code=418,
-        content={"message": f"Oops! {exc.message}"},
+        content={"message": exc.message, "code": exc.code},
     )
 
 

@@ -1,6 +1,7 @@
 import os
 import configparser
 import redis
+from passlib.context import CryptContext
 
 cur_path = os.path.abspath(os.path.curdir)
 print(cur_path)
@@ -30,7 +31,7 @@ for k in conf.options("jwt.extars"):
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 SECRET_KEY = jwt_conf['secret_key']
 ALGORITHM = jwt_conf['algorithm']
-tokenUrl = '/api/client/login'
+tokenUrl = '/login'
 
 error_code = -200
 
@@ -45,3 +46,6 @@ jwt_options = {
 test_db = dict()
 for k in conf.options('db.test'):
     test_db[k] = conf.get('db.test', k)
+
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
