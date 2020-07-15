@@ -44,11 +44,11 @@ async def login(schema: PasswordRequestForm = Depends(), db: Session = Depends(g
         raise BaseError(
             msg=f"error:{e}"
         )
-    user_data = create_user_data(username, user.uid)
+    user_data = create_user_data(user.username, user.uid)
     #  设置token 过期时间
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data=user_data, expires_delta=access_token_expires)
-    await cache.set_account_session(username=username, uid=user.uid, token=access_token)
+    await cache.set_account_session(username=user.username, uid=user.uid, token=access_token)
     user.access_token = access_token
     return BaseResponse(data=UserOutSchema.from_orm(user))
 
