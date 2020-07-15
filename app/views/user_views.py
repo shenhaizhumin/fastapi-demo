@@ -49,7 +49,7 @@ async def user_info(user: UserInfo = Depends(get_current_user)):
 
 
 @user_router.put('/updateUser')
-async def update_user(schema: UserUpdateSchema, user: UserInfo = Depends(get_current_user),
+async def update_user(schema: UserUpdateSchema, current_user: UserInfo = Depends(get_current_user),
                       db: Session = Depends(get_db)):
     update_info = {}
     if schema.nickname:
@@ -58,4 +58,5 @@ async def update_user(schema: UserUpdateSchema, user: UserInfo = Depends(get_cur
         update_info.update({'avatar_url': schema.avatar_url})
     if schema.password:
         update_info.update({'password': schema.password})
-    return BaseResponse(data=user.update(db=db, **update_info))
+    user = current_user.update(db=db, **update_info)
+    return BaseResponse(data=UserOutSchema.from_orm(user))
