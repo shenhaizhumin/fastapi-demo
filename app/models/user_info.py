@@ -1,15 +1,14 @@
-from . import Base, engine
+from . import Base, Session
 import random
 from sqlalchemy import Integer, String, SMALLINT, Column, DateTime, Boolean, ForeignKey
 from datetime import datetime
 from app.util import token_util
-from sqlalchemy.orm import Session, relationship
-
+from sqlalchemy.orm import relationship
 
 # from sqlalchemy import create_engine, MetaData
 # from sqlalchemy.ext.declarative import declarative_base
 # from sqlalchemy.orm import sessionmaker
-
+#
 # uri = f"postgresql://zengqi:123456@39.107.77.70:5432/testdb"
 # engine = create_engine(uri)
 #
@@ -19,7 +18,7 @@ from sqlalchemy.orm import Session, relationship
 # Base.metadata.create_all(bind=engine)
 # Session = sessionmaker(bind=engine)
 # session = Session()
-
+#
 # print("create_all")
 #
 #
@@ -53,9 +52,9 @@ class UserInfo(Base):
     mobile = Column('mobile', String)
     avatar_url = Column('avatar_url', String)
     password = Column('password', String)
-    role_id = Column('role_id', ForeignKey('user_role.id'))
+    role_id = Column('role_id', Integer, ForeignKey('user_role.id'))
 
-    user_role = relationship('user_role')
+    user_role = relationship('UserRole')
 
     @classmethod
     def create(cls, db: Session, **kwargs):
@@ -80,6 +79,8 @@ class UserRole(Base):
     id = Column('id', Integer, primary_key=True, unique=True)
     role_type = Column('role_type', SMALLINT)
 
+
+# Base.metadata.drop_all(bind=engine)
 # 建表
 # Base.metadata.create_all(bind=engine)
 # print("完成！")

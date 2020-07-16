@@ -19,7 +19,7 @@ app.include_router(user_router)
 @app.exception_handler(BaseError)
 async def unicorn_exception_handler(request: Request, exc: BaseError):
     return JSONResponse(
-        status_code=418,
+        status_code=200,
         content={"message": exc.message, "code": exc.code},
     )
 
@@ -35,10 +35,10 @@ async def http_exception_handler(request, exc):
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
     return JSONResponse(
-        status_code=400,
+        status_code=200,
         content={"message": f"{str(exc)}", 'code': error_code},
     )
 
 
 if __name__ == '__main__':
-    uvicorn.run(app)
+    uvicorn.run(app, host='0.0.0.0', port=8021)
