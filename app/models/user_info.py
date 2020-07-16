@@ -1,39 +1,39 @@
-# from . import Base, Session
+from . import Base, Session
 import random
 from sqlalchemy import Integer, String, SMALLINT, Column, DateTime, Boolean, ForeignKey
 from datetime import datetime
 from app.util import token_util
 from sqlalchemy.orm import relationship
 
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+# from sqlalchemy import create_engine, MetaData
+# from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.orm import sessionmaker
 
-uri = f"postgresql://zengqi:123456@39.107.77.70:5432/testdb"
-engine = create_engine(uri)
-
-metadata = MetaData(bind=engine)
-Base = declarative_base(bind=engine)
-# 建表
-Base.metadata.create_all(bind=engine)
-Session = sessionmaker(bind=engine)
-session = Session()
-
-print("create_all")
-
-
-def get_db_session():
-    return session
-
-
-def get_db():
-    try:
-        yield session
-    finally:
-        session.close()
-
-
-db_session = get_db_session()
+# uri = f"postgresql://zengqi:123456@39.107.77.70:5432/testdb"
+# engine = create_engine(uri)
+#
+# metadata = MetaData(bind=engine)
+# Base = declarative_base(bind=engine)
+# # 建表
+# Base.metadata.create_all(bind=engine)
+# Session = sessionmaker(bind=engine)
+# session = Session()
+#
+# print("create_all")
+#
+#
+# def get_db_session():
+#     return session
+#
+#
+# def get_db():
+#     try:
+#         yield session
+#     finally:
+#         session.close()
+#
+#
+# db_session = get_db_session()
 
 
 class UserInfo(Base):
