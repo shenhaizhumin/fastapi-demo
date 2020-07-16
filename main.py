@@ -9,11 +9,13 @@ from app.views.client_login import login_router
 from app.views.gank_api import gank_router
 from app.settings import error_code
 from app.views.user_views import user_router
+from app.views.upload_api import upload_router
 
 app = FastAPI()
 app.include_router(login_router)
 app.include_router(gank_router)
 app.include_router(user_router)
+app.include_router(upload_router)
 
 
 @app.exception_handler(BaseError)

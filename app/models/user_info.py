@@ -1,40 +1,39 @@
-from . import Base, Session
+# from . import Base, Session
 import random
 from sqlalchemy import Integer, String, SMALLINT, Column, DateTime, Boolean, ForeignKey
 from datetime import datetime
 from app.util import token_util
 from sqlalchemy.orm import relationship
 
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-# from sqlalchemy import create_engine, MetaData
-# from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy.orm import sessionmaker
-#
-# uri = f"postgresql://zengqi:123456@39.107.77.70:5432/testdb"
-# engine = create_engine(uri)
-#
-# metadata = MetaData(bind=engine)
-# Base = declarative_base(bind=engine)
-# # 建表
-# Base.metadata.create_all(bind=engine)
-# Session = sessionmaker(bind=engine)
-# session = Session()
-#
-# print("create_all")
-#
-#
-# def get_db_session():
-#     return session
-#
-#
-# def get_db():
-#     try:
-#         yield session
-#     finally:
-#         session.close()
-#
-#
-# db_session = get_db_session()
+uri = f"postgresql://zengqi:123456@39.107.77.70:5432/testdb"
+engine = create_engine(uri)
+
+metadata = MetaData(bind=engine)
+Base = declarative_base(bind=engine)
+# 建表
+Base.metadata.create_all(bind=engine)
+Session = sessionmaker(bind=engine)
+session = Session()
+
+print("create_all")
+
+
+def get_db_session():
+    return session
+
+
+def get_db():
+    try:
+        yield session
+    finally:
+        session.close()
+
+
+db_session = get_db_session()
 
 
 class UserInfo(Base):
@@ -54,8 +53,10 @@ class UserInfo(Base):
     avatar_url = Column('avatar_url', String)
     password = Column('password', String)
     role_id = Column('role_id', Integer, ForeignKey('user_role.id'))
+    avatar_id = Column('avatar_id', Integer, ForeignKey('image.id'))
 
     user_role = relationship('UserRole')
+    user_image = relationship('Image')
 
     @classmethod
     def create(cls, db: Session, **kwargs):
@@ -79,10 +80,12 @@ class UserRole(Base):
     __tablename__ = 'user_role'
     id = Column('id', Integer, primary_key=True, unique=True)
     role_type = Column('role_type', SMALLINT)
+    desc = Column('desc', String)
 
 # Base.metadata.drop_all(bind=engine)
-# 建表
+# # 建表
 # Base.metadata.create_all(bind=engine)
+# engine.dispose()
 # print("完成！")
 # user = db_session.query(UserInfo).filter(UserInfo.username == 'zengqi12').first()
 # user.update(db_session, mobile='231321312312312312311', nickname='333qpweoqw')

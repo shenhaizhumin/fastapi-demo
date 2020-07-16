@@ -14,6 +14,12 @@ print(conf_path)
 conf = configparser.ConfigParser()
 conf.read(conf_path)
 
+files_conf = dict()
+for k in conf.options("file"):
+    files_conf[k] = conf.get("file", k)
+image_dirname = files_conf['image_dirname']
+domain_name = files_conf['domain_name']
+
 """
     redis config
 """
@@ -46,6 +52,5 @@ jwt_options = {
 test_db = dict()
 for k in conf.options('db.test'):
     test_db[k] = conf.get('db.test', k)
-
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
