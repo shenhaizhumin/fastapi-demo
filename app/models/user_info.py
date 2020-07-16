@@ -52,9 +52,16 @@ class UserInfo(Base):
     mobile = Column('mobile', String)
     avatar_url = Column('avatar_url', String)
     password = Column('password', String)
+<<<<<<< HEAD
     role_id = Column('role_id', Integer, ForeignKey('user_role.id'))
 
     user_role = relationship('UserRole')
+=======
+
+    # role_id = Column('role_id', ForeignKey('user_role.id'))
+
+    # user_role = relationship('user_role')
+>>>>>>> 3a008794e03a0a5d2661f38f7be0b77ad0aed173
 
     @classmethod
     def create(cls, db: Session, **kwargs):
@@ -80,9 +87,12 @@ class UserRole(Base):
     role_type = Column('role_type', SMALLINT)
 
 
+<<<<<<< HEAD
 # Base.metadata.drop_all(bind=engine)
+=======
+>>>>>>> 3a008794e03a0a5d2661f38f7be0b77ad0aed173
 # 建表
-# Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 # print("完成！")
 # user = db_session.query(UserInfo).filter(UserInfo.username == 'zengqi12').first()
 # user.update(db_session, mobile='231321312312312312311', nickname='333qpweoqw')

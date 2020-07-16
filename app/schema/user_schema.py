@@ -9,8 +9,8 @@ email_pattern = "^[a-zA-Z0-9_+.-]+@[a-zA-Z0-9_-]+\.[a-zA-Z0-9.]+$"
 
 class UserInSchema(BaseModel):
     username: str = Field(None)
-    email: str = Field(None)
-    mobile: str = Field(None)
+    email: str = Field(None, regex=email_pattern)
+    mobile: str = Field(None, regex=mobile_pattern)
 
     nickname: str = Field(None)
     password: str = Field(...)
