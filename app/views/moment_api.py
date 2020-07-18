@@ -96,6 +96,9 @@ async def collect_moment(schema: CollectInSchema, current_user: UserInfo = Depen
     moment_id = schema.moment_id
     if not db.query(Moment).filter_by(id=moment_id).first():
         raise BaseError(msg='moment not exists')
+    if db.query(Collect).filter_by(moment_id=moment_id, operator_user_id=current_user.id).first():
+        # 重复收藏
+        raise BaseError(msg='already collect')
     collect = Collect(
         operator_user_id=current_user.id,
         user_avatar_url=current_user.avatar_url,
