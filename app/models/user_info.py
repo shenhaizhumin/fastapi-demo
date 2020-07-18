@@ -54,7 +54,6 @@ class UserInfo(Base):
     password = Column('password', String)
     role_id = Column('role_id', Integer, ForeignKey('user_role.id'))
     # avatar_id = Column('avatar_id', Integer, ForeignKey('image.id'))
-
     user_role = relationship('UserRole')
     # user_image = relationship('Image')
 

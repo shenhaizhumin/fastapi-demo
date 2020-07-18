@@ -1,0 +1,74 @@
+from pydantic import BaseModel, Field
+from typing import List
+from datetime import datetime
+
+
+class CollectInSchema(BaseModel):
+    moment_id: int = Field(...)
+
+
+class CommentInSchema(BaseModel):
+    moment_id: int = Field(...)
+    content: str = Field(..., max_length=200)
+
+
+class CollectOutSchema(BaseModel):
+    id: int = Field(None)
+    operator_user_id: int = Field(None)
+    create_time: datetime = Field(None)
+    user_nickname: str = Field(None)
+    user_avatar_url: str = Field(None)
+    moment_id: int = Field(None)
+
+    class Config:
+        orm_mode = True
+
+
+class CommentOutSchema(BaseModel):
+    id: int = Field(None)
+    operator_user_id: int = Field(None)
+    content: str = Field(None)
+    publish_time: datetime = Field(None)
+    user_nickname: str = Field(None)
+    user_avatar_url: str = Field(None)
+    moment_id: int = Field(None)
+
+    class Config:
+        orm_mode = True
+
+
+class ImageInSchema(BaseModel):
+    id: int = Field(...)
+
+
+class ImageOutSchema(BaseModel):
+    file_url: str = Field(None)
+
+    class Config:
+        orm_mode = True
+
+
+class MomentInSchema(BaseModel):
+    content: str = Field(...)
+    content_url: str = Field(None)
+    images: List[ImageInSchema] = Field(None)
+
+
+class MomentOutSchema(BaseModel):
+    '''
+    user_icon = Column('user_icon', String)
+    user_id = Column('user_id', Integer, ForeignKey('user.id'))
+    publish_time = Column('publish_time', String, default=datetime.now())
+    '''
+    id: int = Field(None)
+    content: str = Field(None)
+    images: List[ImageOutSchema] = Field(None)
+    content_url: str = Field(None)
+    user_icon: str = Field(None)
+    user_nickname: str = Field(None)
+    user_id: int = Field(None)
+    comments: List[CommentOutSchema] = Field(None)
+    collects: List[CollectOutSchema] = Field(None)
+
+    class Config:
+        orm_mode = True

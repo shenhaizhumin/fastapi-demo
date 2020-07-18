@@ -61,9 +61,9 @@ async def logout(user=Depends(get_current_user)):
 
 @login_router.put('/addUser')
 async def add(user: User, db: Session = Depends(get_db)):
-    userInfo = UserInfo()
-    userInfo.username = user.username
-    db.add(userInfo)
+    user_info = UserInfo()
+    user_info.username = user.username
+    db.add(user_info)
     db.commit()
     return BaseResponse(data=user)
 
