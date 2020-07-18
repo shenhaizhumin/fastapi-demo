@@ -32,7 +32,7 @@ class Collect(Base):
     user_nickname = Column('user_nickname', String)
     user_avatar_url = Column('user_avatar_url', String)
     moment_id = Column('moment_id', Integer, ForeignKey('moment.id'))
-    user = relationship('UserInfo')
+    publisher = relationship('UserInfo')
 
 
 class Comment(Base):
@@ -43,4 +43,4 @@ class Comment(Base):
     operator_user_id = Column('operator_user_id', Integer, ForeignKey('user.id'))
     user_nickname = Column('user_nickname', String)
     moment_id = Column('moment_id', Integer, ForeignKey('moment.id'))
-    user = relationship('UserInfo')
+    publisher = relationship('UserInfo')
