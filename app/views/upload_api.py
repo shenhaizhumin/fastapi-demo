@@ -40,6 +40,6 @@ async def upload_files(file_list: List[UploadFile] = File(...), db: Session = De
         image_url = domain_name.format(filepath=('/images/{}'.format(file.filename)))
         file_entity = FileEntity(file_name=file.filename, file_path=file_path, file_url=image_url)
         db.add(file_entity)
-        file_entities.append(FileSchema.from_orm(file_entity))
+        file_entities.append(file_entity)
     db.commit()
-    return BaseResponse(data=file_entities)
+    return BaseResponse(data=[FileSchema.from_orm(e) for e in file_entities])
