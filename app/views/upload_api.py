@@ -1,15 +1,17 @@
-from fastapi import File, UploadFile, APIRouter
+from fastapi import File, UploadFile, APIRouter, Depends
 from app.response import BaseError, BaseResponse
 from app.settings import image_dirname, domain_name
 from typing import List
+from app.models import get_db, Session
 import os.path
 from app.models.file_entity import FileEntity
+from app.schema.file_schema import FileSchema
 
 upload_router = APIRouter()
 
 
 @upload_router.post('/uploadFile')
-async def upload_file(file: UploadFile = File(..., alias='image_file')):
+async def upload_file(file: UploadFile = File(..., alias='image_file'), db: Session = Depends(get_db)):
     bys = await file.read()
     if not bys:
         raise BaseError(msg='missing file or file is empty')
@@ -19,12 +21,13 @@ async def upload_file(file: UploadFile = File(..., alias='image_file')):
     # 返回访问链接
     image_url = domain_name.format(filepath=('/images/{}'.format(file.filename)))
     file_entity = FileEntity(file_name=file.filename, file_path=file_path, file_url=image_url)
-
-    return BaseResponse(data=file_entity)
+    db.add(file_entity)
+    db.commit()
+    return BaseResponse(data=FileSchema.from_orm(file_entity))
 
 
 @upload_router.post('/uploadFiles')
-async def upload_files(file_list: List[UploadFile] = File(...)):
+async def upload_files(file_list: List[UploadFile] = File(...), db: Session = Depends(get_db)):
     file_entities = []
     for file in file_list:
         bys = await file.read()
@@ -36,5 +39,7 @@ async def upload_files(file_list: List[UploadFile] = File(...)):
         # 返回访问链接
         image_url = domain_name.format(filepath=('/images/{}'.format(file.filename)))
         file_entity = FileEntity(file_name=file.filename, file_path=file_path, file_url=image_url)
-        file_entities.append(file_entity)
+        db.add(file_entity)
+        file_entities.append(FileSchema.from_orm(file_entity))
+    db.commit()
     return BaseResponse(data=file_entities)
