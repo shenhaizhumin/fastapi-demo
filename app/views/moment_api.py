@@ -17,8 +17,8 @@ async def get_moments(current_user: UserInfo = Depends(get_current_user), db: Se
     查询当前用户的朋友圈列表
     :return:
     '''
-    user_id = current_user.id
-    moments = db.query(Moment).filter_by(user_id=user_id).all()
+    # user_id = current_user.id
+    moments = db.query(Moment).filter_by().all()
     results = [MomentOutSchema.from_orm(m) for m in moments]
     return BaseResponse(data=results)
 
@@ -60,7 +60,7 @@ async def put_moment(schema: MomentInSchema, current_user: UserInfo = Depends(ge
 async def publish_comment(schema: CommentInSchema, current_user: UserInfo = Depends(get_current_user),
                           db: Session = Depends(get_db)):
     '''
-        发布 评论
+    发布 评论
     :param schema:
     :param current_user:
     :param db:
@@ -86,6 +86,13 @@ async def publish_comment(schema: CommentInSchema, current_user: UserInfo = Depe
 @moment_router.post('/moments/collect')
 async def collect_moment(schema: CollectInSchema, current_user: UserInfo = Depends(get_current_user),
                          db: Session = Depends(get_db)):
+    '''
+    收藏
+    :param schema:
+    :param current_user:
+    :param db:
+    :return:
+    '''
     moment_id = schema.moment_id
     if not db.query(Moment).filter_by(id=moment_id).first():
         raise BaseError(msg='moment not exists')
