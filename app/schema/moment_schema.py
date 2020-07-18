@@ -12,12 +12,22 @@ class CommentInSchema(BaseModel):
     content: str = Field(..., max_length=200)
 
 
+class PublisherSchema(BaseModel):
+    user_icon: str = Field(None, alias='avatar_url')
+    user_nickname: str = Field(None, alias='nickname')
+    user_id: int = Field(None, alias='id')
+
+    class Config:
+        orm_mode = True
+
+
 class CollectOutSchema(BaseModel):
     id: int = Field(None)
-    operator_user_id: int = Field(None)
     create_time: datetime = Field(None)
-    user_nickname: str = Field(None)
-    user_avatar_url: str = Field(None)
+    # operator_user_id: int = Field(None)
+    # user_nickname: str = Field(None)
+    # user_avatar_url: str = Field(None)
+    publisher: PublisherSchema = Field(None)
     moment_id: int = Field(None)
 
     class Config:
@@ -26,11 +36,12 @@ class CollectOutSchema(BaseModel):
 
 class CommentOutSchema(BaseModel):
     id: int = Field(None)
-    operator_user_id: int = Field(None)
     content: str = Field(None)
     publish_time: datetime = Field(None)
-    user_nickname: str = Field(None)
-    user_avatar_url: str = Field(None)
+    # operator_user_id: int = Field(None)
+    # user_nickname: str = Field(None)
+    # user_avatar_url: str = Field(None)
+    publisher: PublisherSchema = Field(None)
     moment_id: int = Field(None)
 
     class Config:
@@ -64,9 +75,11 @@ class MomentOutSchema(BaseModel):
     content: str = Field(None)
     images: List[ImageOutSchema] = Field(None)
     content_url: str = Field(None)
-    user_icon: str = Field(None)
-    user_nickname: str = Field(None)
-    user_id: int = Field(None)
+    publish_time: datetime = Field(None)
+    # user_icon: str = Field(None)
+    # user_nickname: str = Field(None)
+    # user_id: int = Field(None)
+    publisher: PublisherSchema = Field(None, alias='publisher')
     comments: List[CommentOutSchema] = Field(None)
     collects: List[CollectOutSchema] = Field(None)
 
