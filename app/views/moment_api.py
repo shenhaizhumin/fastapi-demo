@@ -42,9 +42,7 @@ async def publish_moment(schema: MomentInSchema, current_user: UserInfo = Depend
     user_icon = current_user.avatar_url
     user_name = current_user.nickname
     moment = Moment(
-        user_icon=user_icon,
         user_id=user_id,
-        user_nickname=user_name,
         content=schema.content,
         content_url=schema.content_url,
     )
@@ -78,7 +76,6 @@ async def publish_comment(schema: CommentInSchema, current_user: UserInfo = Depe
     user_name = current_user.nickname
     comment = Comment(
         operator_user_id=user_id,
-        user_nickname=user_name,
         content=schema.content,
         moment_id=moment_id
     )
@@ -106,8 +103,6 @@ async def collect_moment(schema: CollectInSchema, current_user: UserInfo = Depen
         raise BaseError(msg='already collect')
     collect = Collect(
         operator_user_id=current_user.id,
-        user_avatar_url=current_user.avatar_url,
-        user_nickname=current_user.nickname,
         moment_id=moment_id
     )
     db.add(collect)
