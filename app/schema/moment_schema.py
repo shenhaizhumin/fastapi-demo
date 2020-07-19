@@ -95,9 +95,9 @@ class MomentByDaySchema(BaseModel):
 
 
 class UserSchema(BaseModel):
-    user_nickname: str = Field(None, alias='nickname')
-    user_moment_bg: str = Field(None, alias='moment_image')
-    user_avatar_url: str = Field(None, alias='avatar_url')
+    nickname: str = Field(None)
+    moment_image: str = Field(None)
+    avatar_url: str = Field(None)
 
     class Config:
         orm_mode = True
