@@ -8,6 +8,7 @@ from app.schema.moment_schema import CollectInSchema, MomentInSchema, CommentInS
     CommentOutSchema, CollectOutSchema
 from app.models.file_entity import FileEntity
 from app.util.date_util import released_time
+from datetime import datetime
 
 moment_router = APIRouter()
 
@@ -43,6 +44,7 @@ async def publish_moment(schema: MomentInSchema, current_user: UserInfo = Depend
         user_id=user_id,
         content=schema.content,
         content_url=schema.content_url,
+        publish_time=datetime.now()
     )
     db.add(moment)
     # 拿到moment_id
@@ -76,7 +78,8 @@ async def publish_comment(schema: CommentInSchema, current_user: UserInfo = Depe
     comment = Comment(
         operator_user_id=user_id,
         content=schema.content,
-        moment_id=moment_id
+        moment_id=moment_id,
+        publish_time=datetime.now()
     )
     db.add(comment)
     db.commit()
@@ -102,7 +105,8 @@ async def collect_moment(schema: CollectInSchema, current_user: UserInfo = Depen
         raise BaseError(msg='already collect')
     collect = Collect(
         operator_user_id=current_user.id,
-        moment_id=moment_id
+        moment_id=moment_id,
+        create_time=datetime.now()
     )
     db.add(collect)
     db.commit()
