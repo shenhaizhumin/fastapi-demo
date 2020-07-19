@@ -31,6 +31,7 @@ class UserOutSchema(BaseModel):
     type_role: str = Field(None)
     latest_time: datetime = Field(None)
     access_token: str = Field(None)
+    moment_image: str = Field(None)
 
     class Config:
         orm_mode = True
