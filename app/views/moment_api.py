@@ -5,7 +5,7 @@ from app.models.moment import Moment, Collect, Comment
 from app.intercept import get_current_user
 from app.response import BaseError, BaseResponse
 from app.schema.moment_schema import CollectInSchema, MomentInSchema, CommentInSchema, MomentOutSchema, \
-    CommentOutSchema, CollectOutSchema, MomentByDaySchema
+    CommentOutSchema, CollectOutSchema, MomentByDaySchema,UserSchema
 from app.models.file_entity import FileEntity
 from app.util.date_util import released_time
 import datetime
@@ -38,17 +38,15 @@ async def get_moments(current_user: UserInfo = Depends(get_current_user),
 
 @moment_router.get('/moments/{user_id}')
 async def get_moments(user_id: int = Path(...),
-                      db: Session = Depends(get_db)):
+                      db: Session = Depends(get_db), current_user: UserInfo = Depends(get_current_user)):
     '''
     查询当前用户的朋友圈列表
     :return:
     '''
-    if user_id:
-        if not db.query(UserInfo).filter_by(id=user_id).first():
-            raise BaseError('查询的用户已不存在！')
-        moments = db.query(Moment).filter_by(user_id=user_id).order_by(Moment.publish_time.desc()).all()
-    else:
-        moments = db.query(Moment).order_by(Moment.publish_time.desc()).all()
+    user = db.query(UserInfo).filter_by(id=user_id).first()
+    if not user:
+        raise BaseError('查询的用户已不存在！')
+    moments = db.query(Moment).filter_by(user_id=user_id).order_by(Moment.publish_time.desc()).all()
     results = {
 
     }
@@ -74,7 +72,10 @@ async def get_moments(user_id: int = Path(...),
     for k in results.keys():
         data = MomentByDaySchema(day_key=k, moments=results[k])
         res.append(data)
-    return BaseResponse(data=res)
+    return BaseResponse(data={
+        'list': res,
+        'user': UserSchema.from_orm(user)
+    })
 
 
 def method(results: dict, key: str, m: Moment):

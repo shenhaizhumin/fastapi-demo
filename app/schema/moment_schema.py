@@ -89,3 +89,15 @@ class MomentByDaySchema(BaseModel):
     day_key: str = Field(None)
     year: int = Field(None)
     moments: list = Field(None)
+
+    class Config:
+        orm_mode = True
+
+
+class UserSchema(BaseModel):
+    user_nickname: str = Field(None, alias='nickname')
+    user_moment_bg: str = Field(None, alias='moment_image')
+    user_avatar_url: str = Field(None, alias='avatar_url')
+
+    class Config:
+        orm_mode = True
