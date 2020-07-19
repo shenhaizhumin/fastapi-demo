@@ -51,6 +51,7 @@ class UserInfo(Base):
     latest_ip = Column('latest_ip', String)
     mobile = Column('mobile', String)
     avatar_url = Column('avatar_url', String)
+    moment_image = Column('moment_image', String)
     password = Column('password', String)
     role_id = Column('role_id', Integer, ForeignKey('user_role.id'))
     # avatar_id = Column('avatar_id', Integer, ForeignKey('image.id'))
