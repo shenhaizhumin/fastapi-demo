@@ -77,12 +77,15 @@ class MomentOutSchema(BaseModel):
     content_url: str = Field(None)
     publish_time: datetime = Field(None)
     release_time: str = Field(None)
-    # user_icon: str = Field(None)
-    # user_nickname: str = Field(None)
-    # user_id: int = Field(None)
     publisher: PublisherSchema = Field(None, alias='publisher')
     comments: List[CommentOutSchema] = Field(None)
     collects: List[CollectOutSchema] = Field(None)
 
     class Config:
         orm_mode = True
+
+
+class MomentByDaySchema(BaseModel):
+    day_key: str = Field(None)
+    year: int = Field(None)
+    moments: list = Field(None)

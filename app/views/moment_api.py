@@ -1,32 +1,87 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query, Path
 from app.models import Session, get_db
 from app.models.user_info import UserInfo
 from app.models.moment import Moment, Collect, Comment
 from app.intercept import get_current_user
 from app.response import BaseError, BaseResponse
 from app.schema.moment_schema import CollectInSchema, MomentInSchema, CommentInSchema, MomentOutSchema, \
-    CommentOutSchema, CollectOutSchema
+    CommentOutSchema, CollectOutSchema, MomentByDaySchema
 from app.models.file_entity import FileEntity
 from app.util.date_util import released_time
-from datetime import datetime
+import datetime
+from typing import List
 
 moment_router = APIRouter()
 
 
 @moment_router.get('/moments')
-async def get_moments(current_user: UserInfo = Depends(get_current_user), db: Session = Depends(get_db)):
+async def get_moments(current_user: UserInfo = Depends(get_current_user),
+                      db: Session = Depends(get_db)):
     '''
     查询当前用户的朋友圈列表
     :return:
     '''
-    # user_id = current_user.id
-    moments = db.query(Moment).filter_by().order_by(Moment.publish_time.desc()).all()
+    # if user_id:
+    #     if not db.query(UserInfo).filter_by(id=user_id).first():
+    #         raise BaseError('查询的用户已不存在！')
+    #     moments = db.query(Moment).filter_by(user_id=user_id).order_by(Moment.publish_time.desc()).all()
+    # else:
+    #     moments = db.query(Moment).order_by(Moment.publish_time.desc()).all()
+    moments = db.query(Moment).order_by(Moment.publish_time.desc()).all()
     results = []
     for m in moments:
         m.release_time = released_time(m.publish_time)
         results.append(MomentOutSchema.from_orm(m))
     # results = [MomentOutSchema.from_orm(m) for m in moments]
     return BaseResponse(data=results)
+
+
+@moment_router.get('/moments/{user_id}')
+async def get_moments(user_id: int = Path(...),
+                      db: Session = Depends(get_db)):
+    '''
+    查询当前用户的朋友圈列表
+    :return:
+    '''
+    if user_id:
+        if not db.query(UserInfo).filter_by(id=user_id).first():
+            raise BaseError('查询的用户已不存在！')
+        moments = db.query(Moment).filter_by(user_id=user_id).order_by(Moment.publish_time.desc()).all()
+    else:
+        moments = db.query(Moment).order_by(Moment.publish_time.desc()).all()
+    results = {
+
+    }
+    today = datetime.datetime.today()
+    yesterday = today - datetime.timedelta(days=1)
+    current_year = datetime.datetime.now().year
+    for m in moments:
+        publish_time = m.publish_time
+        m.release_time = released_time(publish_time)
+        current_date = publish_time.date()
+        if current_date == today.date():
+            method(results, '今天', m)
+        elif current_date == yesterday.date():
+            method(results, '昨天', m)
+        else:
+            if current_year == current_date.year:
+                key = current_date.strftime('%m-%d')
+                method(results, key, m)
+            else:
+                key = current_date.strftime('%Y-%m-%d')
+                method(results, key, m)
+    res = []
+    for k in results.keys():
+        data = MomentByDaySchema(day_key=k, moments=results[k])
+        res.append(data)
+    return BaseResponse(data=res)
+
+
+def method(results: dict, key: str, m: Moment):
+    if results.get(key):
+        results[key].append(MomentOutSchema.from_orm(m))
+    else:
+        results[key] = [MomentOutSchema.from_orm(m)]
 
 
 @moment_router.post('/moments/publish')
@@ -112,3 +167,11 @@ async def collect_moment(schema: CollectInSchema, current_user: UserInfo = Depen
     db.commit()
     db.flush()
     return BaseResponse(data=CollectOutSchema.from_orm(collect))
+
+
+@moment_router.put('/moments/modify/{moment_id}')
+async def modify(moment_id=Path(...), time_str=Query(...), db: Session = Depends(get_db)):
+    moment = db.query(Moment).filter_by(id=moment_id).first()
+    moment.publish_time = datetime.datetime.strptime(time_str, "%Y-%m-%d %H:%M")
+    db.commit()
+    return BaseResponse(data=moment)
