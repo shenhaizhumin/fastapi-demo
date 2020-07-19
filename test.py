@@ -51,6 +51,7 @@ class UserInfo(Base):
     role_id = Column('role_id', Integer, ForeignKey('user_role.id'))
     # avatar_id = Column('avatar_id', Integer, ForeignKey('image.id'))
     user_role = relationship('UserRole')
+    moment_image = Column('moment_image', String)
 
     # user_image = relationship('Image')
 
@@ -86,7 +87,7 @@ class Moment(Base):
     # user_nickname = Column('user_nickname', String)
     # user_icon = Column('user_icon', String)
     user_id = Column('user_id', Integer, ForeignKey('user.id'))
-    publish_time = Column('publish_time', String, default=datetime.now())
+    publish_time = Column('publish_time', DateTime, default=datetime.now())
     # 链接地址
     content_url = Column('content_url', String)
     # 图片列表
@@ -114,7 +115,7 @@ class Comment(Base):
     __tablename__ = 'comment'
     id = Column('id', Integer, primary_key=True)
     content = Column('content', String)
-    publish_time = Column('publish_time', String, default=datetime.now())
+    publish_time = Column('publish_time', DateTime, default=datetime.now())
     operator_user_id = Column('operator_user_id', Integer, ForeignKey('user.id'))
     # user_nickname = Column('user_nickname', String)
     moment_id = Column('moment_id', Integer, ForeignKey('moment.id'))

@@ -58,5 +58,7 @@ async def update_user(schema: UserUpdateSchema, current_user: UserInfo = Depends
         update_info.update({'avatar_url': schema.avatar_url})
     if schema.password:
         update_info.update({'password': schema.password})
+    if schema.moment_image:
+        update_info.update({'moment_image': schema.moment_image})
     user = current_user.update(db=db, **update_info)
     return BaseResponse(data=UserOutSchema.from_orm(user))

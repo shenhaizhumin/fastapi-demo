@@ -40,3 +40,4 @@ class UserUpdateSchema(BaseModel):
     nickname: str = Field(None)
     password: str = Field(None)
     avatar_url: str = Field(None)
+    moment_image: str = Field(None)
