@@ -45,7 +45,6 @@ async def publish_moment(schema: MomentInSchema, current_user: UserInfo = Depend
         content_url=schema.content_url,
     )
     db.add(moment)
-    db.commit()
     image_ids = schema.images
     # 绑定图片列表
     if image_ids and len(image_ids) > 0:
@@ -53,6 +52,7 @@ async def publish_moment(schema: MomentInSchema, current_user: UserInfo = Depend
             file_entity = db.query(FileEntity).filter_by(id=i.id).first()
             if file_entity:
                 file_entity.moment_id = moment.id
+    db.commit()
     # db.flush()
     return BaseResponse(data=MomentOutSchema.from_orm(moment))
 
