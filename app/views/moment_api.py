@@ -7,6 +7,7 @@ from app.response import BaseError, BaseResponse
 from app.schema.moment_schema import CollectInSchema, MomentInSchema, CommentInSchema, MomentOutSchema, \
     CommentOutSchema, CollectOutSchema
 from app.models.file_entity import FileEntity
+from app.util.date_util import released_time
 
 moment_router = APIRouter()
 
@@ -18,14 +19,18 @@ async def get_moments(current_user: UserInfo = Depends(get_current_user), db: Se
     :return:
     '''
     # user_id = current_user.id
-    moments = db.query(Moment).filter_by().all()
-    results = [MomentOutSchema.from_orm(m) for m in moments]
+    moments = db.query(Moment).filter_by().order_by(Moment.publish_time.desc()).all()
+    results = []
+    for m in moments:
+        m.release_time = released_time(m.publish_time)
+        results.append(MomentOutSchema.from_orm(m))
+    # results = [MomentOutSchema.from_orm(m) for m in moments]
     return BaseResponse(data=results)
 
 
 @moment_router.post('/moments/publish')
-async def put_moment(schema: MomentInSchema, current_user: UserInfo = Depends(get_current_user),
-                     db: Session = Depends(get_db)):
+async def publish_moment(schema: MomentInSchema, current_user: UserInfo = Depends(get_current_user),
+                         db: Session = Depends(get_db)):
     '''
         发布动态
     :param schema:

@@ -76,6 +76,7 @@ class MomentOutSchema(BaseModel):
     images: List[ImageOutSchema] = Field(None)
     content_url: str = Field(None)
     publish_time: datetime = Field(None)
+    release_time: str = Field(None)
     # user_icon: str = Field(None)
     # user_nickname: str = Field(None)
     # user_id: int = Field(None)
