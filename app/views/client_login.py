@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Form, Query
+from fastapi import APIRouter, Depends, Form, Query, Request
 from app.intercept import get_current_user
 from datetime import timedelta
 from app.settings import ACCESS_TOKEN_EXPIRE_MINUTES
@@ -12,6 +12,7 @@ from app.models import get_db, Session
 from app.schema.user_schema import UserOutSchema, mobile_pattern, email_pattern
 import re
 from app.settings import pwd_context
+import datetime
 
 login_router = APIRouter()
 cache = Cache()
@@ -23,7 +24,7 @@ async def get(x: str = Form(...)):
 
 
 @login_router.post(tokenUrl)
-async def login(schema: PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login(req: Request, schema: PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     username = schema.username
     if re.match(mobile_pattern, username):
         user = db.query(UserInfo).filter_by(mobile=username).first()
@@ -50,6 +51,9 @@ async def login(schema: PasswordRequestForm = Depends(), db: Session = Depends(g
     access_token = create_access_token(data=user_data, expires_delta=access_token_expires)
     await cache.set_account_session(username=user.username, uid=user.uid, token=access_token)
     user.access_token = access_token
+    user.latest_ip = req.client.host
+    user.latest_time = datetime.datetime.now()
+    db.commit()
     return BaseResponse(data=UserOutSchema.from_orm(user))
 
 

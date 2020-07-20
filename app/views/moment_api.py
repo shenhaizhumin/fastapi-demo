@@ -5,7 +5,7 @@ from app.models.moment import Moment, Collect, Comment
 from app.intercept import get_current_user
 from app.response import BaseError, BaseResponse
 from app.schema.moment_schema import CollectInSchema, MomentInSchema, CommentInSchema, MomentOutSchema, \
-    CommentOutSchema, CollectOutSchema, MomentByDaySchema,UserSchema
+    CommentOutSchema, CollectOutSchema, MomentByDaySchema, UserSchema
 from app.models.file_entity import FileEntity
 from app.util.date_util import released_time
 import datetime
@@ -47,12 +47,16 @@ async def get_moments(user_id: int = Path(...),
     if not user:
         raise BaseError('查询的用户已不存在！')
     moments = db.query(Moment).filter_by(user_id=user_id).order_by(Moment.publish_time.desc()).all()
+
+    # moments = db.query(Moment.publish_time, Moment.content).filter_by(user_id=user_id).group_by(
+    #     'publish_time','content').all()
     results = {
 
     }
     today = datetime.datetime.today()
     yesterday = today - datetime.timedelta(days=1)
     current_year = datetime.datetime.now().year
+    list_data=[]
     for m in moments:
         publish_time = m.publish_time
         m.release_time = released_time(publish_time)
