@@ -100,7 +100,7 @@ async def publish_moment(schema: MomentInSchema, current_user: UserInfo = Depend
         user_id=user_id,
         content=schema.content,
         content_url=schema.content_url,
-        publish_time=datetime.now()
+        publish_time=datetime.datetime.now()
     )
     db.add(moment)
     # 拿到moment_id
@@ -135,7 +135,7 @@ async def publish_comment(schema: CommentInSchema, current_user: UserInfo = Depe
         operator_user_id=user_id,
         content=schema.content,
         moment_id=moment_id,
-        publish_time=datetime.now()
+        publish_time=datetime.datetime.now()
     )
     db.add(comment)
     db.commit()
@@ -162,7 +162,7 @@ async def collect_moment(schema: CollectInSchema, current_user: UserInfo = Depen
     collect = Collect(
         operator_user_id=current_user.id,
         moment_id=moment_id,
-        create_time=datetime.now()
+        create_time=datetime.datetime.now()
     )
     db.add(collect)
     db.commit()
