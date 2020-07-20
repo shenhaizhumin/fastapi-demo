@@ -40,7 +40,7 @@ async def get_moments(current_user: UserInfo = Depends(get_current_user),
 async def get_moments(user_id: int = Path(...),
                       db: Session = Depends(get_db), current_user: UserInfo = Depends(get_current_user)):
     '''
-    查询当前用户的朋友圈列表
+    查询用户的朋友圈列表
     :return:
     '''
     user = db.query(UserInfo).filter_by(id=user_id).first()
@@ -74,7 +74,7 @@ async def get_moments(user_id: int = Path(...),
         res.append(data)
     return BaseResponse(data={
         'list': res,
-        'user': UserSchema.from_orm(user)
+        'friendInfo': UserSchema.from_orm(user)
     })
 
 
