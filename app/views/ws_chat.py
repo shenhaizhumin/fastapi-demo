@@ -8,8 +8,8 @@ from starlette.responses import HTMLResponse
 # 路由
 from starlette.routing import Route, WebSocketRoute
 from app.intercept import get_current_user
-
-
+from pydantic import BaseModel
+from app.models.user_info import UserInfo
 
 ws_router = APIRouter()
 
@@ -41,21 +41,36 @@ async def get():
     # 返回表单信息
     return HTMLResponse(html)
 
+
 clients = []
 
 
-class MsgMode(object):
-    def __init__(self, user_id, to_id, msg):
-        self.user_id = user_id
-        self.to_id = to_id
-        self.msg = msg
+class MsgMode(BaseModel):
+    user_id: int
+    friend_id: int
+    content: str
+
+    class Config:
+        orm_mode = True
 
 
 @ws_router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
+async def websocket_endpoint(websocket: WebSocket, current_user: UserInfo = Depends(get_current_user)):
     await websocket.accept()
-    clients.append(websocket)
+    clients.append({current_user.id: websocket})
     while True:
         data = await websocket.receive_json(mode='text')
+        user_id = data['user_id']  # 发送者
+        friend_id = data['friend_id']  # 接收者
+        content = data['content']  # 发送内容
         for c in clients:
-            await c.send_text(f" {data['msg']}")
+            '''
+            chatMsg.content = msg
+                chatMsg.friend_id = friendId
+                chatMsg.user_id = userId
+                chatMsg.ismineChat = 0
+                chatMsg.post_date = Date()
+            '''
+            client = c[friend_id]  # 找到接收者的客户端
+            if client:
+                await client.send_text(MsgMode.from_orm(**data))  # 下发消息
