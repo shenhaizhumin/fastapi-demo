@@ -62,3 +62,9 @@ async def update_user(schema: UserUpdateSchema, current_user: UserInfo = Depends
         update_info.update({'moment_image': schema.moment_image})
     user = current_user.update(db=db, **update_info)
     return BaseResponse(data=UserOutSchema.from_orm(user))
+
+
+@user_router.get('/allUser')
+async def all_user(db: Session = Depends(get_db)):
+    users = db.query(UserInfo).all()
+    return BaseResponse(data=[UserOutSchema.from_orm(user) for user in users])
