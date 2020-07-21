@@ -12,13 +12,15 @@ from app.settings import error_code
 from app.views.user_views import user_router
 from app.views.upload_api import upload_router
 from app.views.moment_api import moment_router
+from app.views.ws_chat import ws_router
 import time
 from starlette.responses import StreamingResponse
 from fastapi.logger import logger as fastapi_logger
 from logging.handlers import RotatingFileHandler
 import logging
 import traceback
-
+# 路由
+from starlette.routing import Route, WebSocketRoute
 formatter = logging.Formatter(
     "[%(asctime)s.%(msecs)03d] %(levelname)s [%(thread)d] - %(message)s", "%Y-%m-%d %H:%M:%S")
 handler = RotatingFileHandler('error.log', backupCount=0)
@@ -32,6 +34,7 @@ app.include_router(gank_router)
 app.include_router(user_router)
 app.include_router(upload_router)
 app.include_router(moment_router)
+app.include_router(ws_router)
 
 
 @app.exception_handler(BaseError)

@@ -131,6 +131,29 @@ class FileEntity(Base):
     moment_id = Column('moment_id', Integer, ForeignKey('moment.id'))
 
 
+'''
+  val friend_user_id: Int,
+    val msg: String,
+    val latest_msg: String,
+    val to_id: Int,
+    val friend_nickname: String,
+    val friend_avatar_url: String,
+    val latest_time: String
+'''
+
+
+class P2pMessage(Base):
+    __tablename__ = 'file_entity'
+    id = Column('id', Integer, primary_key=True, unique=True)
+    friend_user_id = Column('friend_user_id', Integer)
+    to_id = Column('to_id', Integer)
+    msg = Column('msg', String)
+    friend_nickname = Column('friend_nickname', String)
+    friend_avatar_url = Column('friend_avatar_url', String)
+    latest_time = Column('latest_time', String)
+    latest_msg = Column('latest_msg', String)
+
+
 Base.metadata.drop_all(bind=engine)
 # 建表
 Base.metadata.create_all(bind=engine)
