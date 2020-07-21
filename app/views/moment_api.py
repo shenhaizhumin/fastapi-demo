@@ -56,7 +56,7 @@ async def get_moments(user_id: int = Path(...),
     today = datetime.datetime.today()
     yesterday = today - datetime.timedelta(days=1)
     current_year = datetime.datetime.now().year
-    list_data=[]
+    list_data = []
     for m in moments:
         publish_time = m.publish_time
         m.release_time = released_time(publish_time)

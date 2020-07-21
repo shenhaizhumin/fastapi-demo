@@ -5,6 +5,7 @@ from datetime import datetime
 from app.util import token_util
 from sqlalchemy.orm import relationship
 
+
 # from sqlalchemy import create_engine, MetaData
 # from sqlalchemy.ext.declarative import declarative_base
 # from sqlalchemy.orm import sessionmaker
@@ -56,7 +57,14 @@ class UserInfo(Base):
     role_id = Column('role_id', Integer, ForeignKey('user_role.id'))
     # avatar_id = Column('avatar_id', Integer, ForeignKey('image.id'))
     user_role = relationship('UserRole')
+
     # user_image = relationship('Image')
+
+    @classmethod
+    def delete_user(cls, db: Session, **kwargs):
+        db.query(UserInfo).filter_by(kwargs).update({UserInfo.enable: False})
+        db.commit()
+        return True
 
     @classmethod
     def create(cls, db: Session, **kwargs):
