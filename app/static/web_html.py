@@ -17,7 +17,7 @@ html = """
         <script>
             document.getElementById("messageText").placeholder="第一次输入内容为昵称";
         
-            var ws = new WebSocket("ws://0.0.0.0:8021/ws");
+            var ws = new WebSocket("ws://39.107.77.70:8888/ws");
             
             // 接收
             ws.onmessage = function(event) {
