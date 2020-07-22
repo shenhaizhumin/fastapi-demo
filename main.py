@@ -21,6 +21,8 @@ import logging
 import traceback
 # 路由
 from starlette.routing import Route, WebSocketRoute
+from app.views.ws_chat import Homepage, Echo
+
 formatter = logging.Formatter(
     "[%(asctime)s.%(msecs)03d] %(levelname)s [%(thread)d] - %(message)s", "%Y-%m-%d %H:%M:%S")
 handler = RotatingFileHandler('error.log', backupCount=0)
@@ -28,7 +30,11 @@ logging.getLogger("fastapi")
 fastapi_logger.addHandler(handler)
 handler.setFormatter(formatter)
 
-app = FastAPI()
+routes = [
+    Route("/", Homepage),
+    WebSocketRoute("/ws", Echo)
+]
+app = FastAPI(routes=routes)
 app.include_router(login_router)
 app.include_router(gank_router)
 app.include_router(user_router)
