@@ -119,18 +119,17 @@ class Echo(WebSocketEndpoint):
             else:
                 await websocket.send_text('无效的消息格式')
 
-
-# 断开 删除
-async def on_disconnect(self, websocket, close_code):
-    # socket_only = await self.alter_socket(websocket)
-    # 删除连接池
-    for entity in clients:
-        if entity.ws == websocket:
-            clients.remove(entity)
-            print("user_id:{} disconnected".format(entity.user_id))
-    # clients.pop(socket_only)
-    # print(info)
-    pass
+    # 断开 删除
+    async def on_disconnect(self, websocket, close_code):
+        # socket_only = await self.alter_socket(websocket)
+        # 删除连接池
+        for entity in clients:
+            if entity.ws == websocket:
+                clients.remove(entity)
+                print("user_id:{} disconnected".format(entity.user_id))
+        # clients.pop(socket_only)
+        # print(info)
+        pass
 
 
 ws_router = APIRouter()
