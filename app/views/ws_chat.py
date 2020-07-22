@@ -79,6 +79,7 @@ class Echo(WebSocketEndpoint):
         if not user_info or type(user_info) != dict:
             await websocket.send_json({'msg': '无法识别的用户连接'})
         else:
+            print(user_info)
             # socket_only = await self.alter_socket(websocket)
             # 添加连接池 保存用户名
             user_id = user_info['user_id']
