@@ -1,0 +1,73 @@
+虚拟环境本质是一个文件，是为了适应不同的项目而存在。pipenv相当于virtualenv和pip的合体。
+整合了 pip+virtualenv+Pipfile，能够自动处理好包的依赖问题和虚拟环境问题，是最推荐使用的虚拟环境管理。
+过去用virtualenv管理requirements.txt文件可能会有问题，Pipenv使用Pipfile和Pipfile.lock，后者存放包的依赖关系，查看依赖关系十分方便。
+各个地方使用了哈希校验，无论安装还是卸载包都十分安全，且会自动公开安全漏洞。
+通过加载.env文件简化开发工作流程。
+支持Python2 和 Python3，在各个平台的命令都是一样的。
+
+# 安装pipenv
+[root@localhost ~]# pip install pipenv
+# 升级pipenv
+[root@localhost ~]# pip install --upgrade pipenv
+# 卸载pipenv
+[root@localhost ~]# pip uninstall pipenv
+
+
+# 1.进入到项目目录
+[root@localhost ~]# cd /www/wwwroot/myproject
+# 2.创建虚拟环境
+[root@localhost myproject]# pipenv install
+[root@localhost myproject]# pipenv install --three              # 使用当前系统的Python3创建环境
+[root@localhost myproject]# pipenv --two                        # 使用python2创建环境
+[root@localhost myproject]# pipenv --three                      # 使用python3创建环境
+[root@localhost myproject]# pipenv --python 3.6                 # 指定某个Python版本创建环境
+[root@localhost myproject]# pipenv --python <path/to/python>    # 指定某个位置的Python创建环境
+# 3.激活并进入虚拟环境
+[root@localhost myproject]# pipenv shell
+# 4.在虚拟环境中安装模块，并加入到Pipfile。可以不进入虚拟环境中，直接在项目目录下面使用pipenv安装即可。
+(myproject) [root@localhost myproject]# pipenv install requests
+(myproject) [root@localhost myproject]# pipenv install django==1.11
+(myproject) [root@localhost myproject]# pipenv uninstall requests
+# 5.运行python项目
+(myproject) [root@localhost myproject]# python Main.py
+(myproject) [root@localhost myproject]# pipenv run python main.py
+# 6.退出虚拟环境
+(myproject) [root@localhost myproject]# exit
+
+
+当运行pipenv install 命令时， pipenv 会在项目目录下寻找Pipfile文件，如果没有则生成一个Pipfile文件。install, uninstall和lock等命令都会生成Pipfile.lock文件。两个文件互相配合，完成虚拟环境的管理工作。
+pipenv install 创建的虚拟环境名字格式为：项目目录名+随机字符串。如上面的：myproject-1qCvww8S和myproject-jyD3CuVy。在windows系统中，默认的路径为C:\Users\Administrator\.virtualenvs\下。而在linux环境系统中，默认的路径为：~/.local/share/virtualenvs/。如果你想在项目目录内创建虚拟环境文件夹，可以设置环境变量PIPENV_VENV_IN_PROJECT，这时名为.venv的虚拟环境文件夹将在项目根目录下创建。
+创建虚拟环境时，如果要指定Python版本，可以使用--two指定python2版本；使用--three指定Python3版本；或是使用 --python 选项指定具体的版本号。
+如果要显示激活虚拟环境命令，使用：pipenv shell,退出虚拟环境则使用exit。当然，也可以使用pipenv run命令隐式激活虚拟环境。
+
+# 创建pipenv虚拟环境
+[root@localhost myproject]# pipenv install
+[root@localhost myproject]# pipenv --two/--three
+# 查看项目所在路径
+[root@localhost myproject]# pipenv --where
+# 查看虚拟环境所在路径
+[root@localhost myproject]# pipenv --venv
+# 查看虚拟环境中Python执行文件所在位置（即显示Python解释器信息）
+[root@localhost myproject]# pipenv --py
+# 进入pipenv虚拟环境（未存在虚拟环境可自动创建）　　
+[root@localhost myproject]# pipenv shell
+# 安装与卸载包
+(myproject) [root@localhost myproject]# pipenv install requests
+(myproject) [root@localhost myproject]# pipenv uninstall requests
+(myproject) [root@localhost myproject]# pipenv uninstall --all       # 卸载全部包并从Pipfile中移除
+# 查看虚拟环境内安装的包以及包之间的依赖关系
+(myproject) [root@localhost myproject]# pipenv graph
+# 查找虚拟环境所有安装包
+(myproject) [root@localhost myproject]# pip list
+# 导出虚拟环境内所有依赖包名
+(myproject) [root@localhost myproject]# pip freeze > requirements.txt
+# 安装项目所依赖全部模块
+(myproject) [root@localhost myproject]# pip install -r requirements.txt
+# 检查包的安全性
+(myproject) [root@localhost myproject]# pipenv check
+# 生成Pipenv.lock，Pipfile.lock用来冻结软件包名称及其版本以及其自己的依赖关系的列表
+(myproject) [root@localhost myproject]# pipenv lock
+# 退出pipenv虚拟环境　　
+(myproject) [root@localhost myproject]# exit
+# 删除pipenv当前虚拟环境
+[root@localhost myproject]# pipenv --rm
