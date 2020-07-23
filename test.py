@@ -143,15 +143,15 @@ class FileEntity(Base):
 
 
 class P2pMessage(Base):
-    __tablename__ = 'file_entity'
+    __tablename__ = 'p2p_message'
     id = Column('id', Integer, primary_key=True, unique=True)
-    friend_user_id = Column('friend_user_id', Integer)
-    to_id = Column('to_id', Integer)
-    msg = Column('msg', String)
-    friend_nickname = Column('friend_nickname', String)
-    friend_avatar_url = Column('friend_avatar_url', String)
-    latest_time = Column('latest_time', String)
-    latest_msg = Column('latest_msg', String)
+    receive_id = Column('receive_id', Integer)  # 接收者id
+    send_id = Column('send_id', Integer)  # 发送者 id
+    msg = Column('msg', String)  # 消息内容
+    receive_nickname = Column('receive_nickname', String)
+    receive_avatar_url = Column('receive_avatar_url', String)
+    post_time = Column('post_time', String)  # 发送时间
+    # latest_msg = Column('latest_msg', String)
 
 
 Base.metadata.drop_all(bind=engine)
@@ -159,3 +159,43 @@ Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 engine.dispose()
 print('finish')
+
+'''
+server {
+    server_name dicastal.realibox.com;
+    listen 443 ssl;
+    ssl_certificate cert/realibox.com.pem;
+    ssl_certificate_key cert/realibox.com.key;
+    ssl_session_timeout 5m;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+    ssl_prefer_server_ciphers on;
+    client_max_body_size 20m;
+
+    # socket代理
+    location /socket.io {
+        proxy_pass http://127.0.0.1:8050;
+        proxy_connect_timeout 300s;
+        proxy_send_timeout 300s;
+        proxy_read_timeout 300s;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $http_x_real_ip;
+    }
+
+                                                              1,8           Top
+        proxy_read_timeout 300s;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $http_x_real_ip;
+    }
+
+    location / {
+        proxy_pass http://dicastal.realibox.com;
+    }
+}
+'''

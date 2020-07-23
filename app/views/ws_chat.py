@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 from app.models.user_info import UserInfo
 import json
 from app.response import BaseError, BaseResponse
+from app.models.chat_message import P2pMessage
 
 '''
 chatMsg.content = msg
@@ -25,14 +26,14 @@ chatMsg.content = msg
                 chatMsg.post_date = Date()'''
 
 
-class P2pMessage(BaseModel):
-    user_id: int = Field(None)
-    friend_id: int = Field(None)
-    content: str = Field(None)
-    post_date: int = Field(None)
-
-    class Config:
-        orm_mode = True
+# class P2pMessageSchema(BaseModel):
+#     user_id: int = Field(None)
+#     friend_id: int = Field(None)
+#     content: str = Field(None)
+#     post_date: int = Field(None)
+#
+#     class Config:
+#         orm_mode = True
 
 
 class WsEntity(object):
@@ -82,14 +83,17 @@ class Echo(WebSocketEndpoint):
             print(user_info)
             # socket_only = await self.alter_socket(websocket)
             # 添加连接池 保存用户名
-            user_id = user_info['user_id']
-            ws_entity = WsEntity(websocket, user_id)
-            if ws_entity in clients:
-                for c in clients:
-                    if c.user_id == user_id:
-                        c.ws = websocket
+            user_id = user_info.get('user_id')
+            if not user_id:
+                ws_entity = WsEntity(websocket, user_id)
+                if ws_entity in clients:
+                    for c in clients:
+                        if c.user_id == user_id:
+                            c.ws = websocket
+                else:
+                    clients.append(ws_entity)
             else:
-                clients.append(ws_entity)
+                await websocket.send_json({'msg': '无法识别的用户连接'})
 
             # 先循环 告诉之前的用户有新用户加入了
             # for wbs in info:
@@ -105,17 +109,29 @@ class Echo(WebSocketEndpoint):
         else:
             data = json.loads(data)
             if data and type(data) == dict:
-                friend_id = data['friend_id']
-                user_id = data['user_id']
-                content = data['content']
+                receive_id = data.get('friend_id')  # 接收者
+                send_id = data.get('user_id')  # 发送者
+                content = data.get('content')
                 # send_ws = clients[user_id]  # 发送者
                 for wsEntity in clients:
-                    if wsEntity.user_id == friend_id:
+                    if wsEntity.user_id == receive_id:
                         # 拼接消息
-                        msg = P2pMessage(user_id=user_id, friend_id=friend_id, content=content,
-                                         post_date=int(time.time() * 1000))
+                        # msg = P2pMessage(send_id=user_id, receive_id=friend_id, msg=content,
+                        #                  post_date=int(time.time() * 1000))
+                        # data.update({'post_date': int(time.time() * 1000)})
+                        receive_nickname = data['friend_nickname']
+                        receive_avatar_url = data['friend_avatar_url']
+                        send_nickname = data['nickname']
+                        send_avatar_url = data['mine_avatar_url']
+                        data['user_id'] = receive_id
+                        data['friend_id'] = send_id
+                        data['friend_nickname'] = send_nickname
+                        data['friend_avatar_url'] = send_avatar_url
+                        data['nickname'] = receive_nickname
+                        data['mine_avatar_url'] = receive_avatar_url
+                        data['post_date'] = int(time.time() * 1000)
                         receive_ws = wsEntity.ws  # 接收者
-                        await receive_ws.send_text(msg.json().__str__())
+                        await receive_ws.send_text(data.__str__())
             else:
                 await websocket.send_text('无效的消息格式')
 
