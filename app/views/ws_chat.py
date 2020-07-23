@@ -77,7 +77,7 @@ class Echo(WebSocketEndpoint):
 
         # 用户输入名称
         user_info = await websocket.receive_json()
-        if not user_info or type(user_info) != dict:
+        if not user_info:
             await websocket.send_json({'msg': '无法识别的用户连接'})
         else:
             print(user_info)
