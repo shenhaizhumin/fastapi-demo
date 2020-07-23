@@ -84,7 +84,7 @@ class Echo(WebSocketEndpoint):
             # socket_only = await self.alter_socket(websocket)
             # 添加连接池 保存用户名
             user_id = user_info.get('user_id')
-            if not user_id:
+            if user_id:
                 ws_entity = WsEntity(websocket, user_id)
                 if ws_entity in clients:
                     for c in clients:
