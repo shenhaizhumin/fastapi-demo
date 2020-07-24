@@ -109,28 +109,27 @@ class Echo(WebSocketEndpoint):
         else:
             data = json.loads(data)
             if data and type(data) == dict:
-                receive_id = data.get('friend_id')  # 接收者
-                send_id = data.get('user_id')  # 发送者
-                content = data.get('content')
-                # send_ws = clients[user_id]  # 发送者
+                send_user_id = data.get('senderUserId')  # 发送者
+                # content = data.get('content')
+                target_id = data.get('targetId')  # 接收者
                 for wsEntity in clients:
-                    if wsEntity.user_id == receive_id:
+                    if wsEntity.user_id == target_id:
                         # 拼接消息
                         # msg = P2pMessage(send_id=user_id, receive_id=friend_id, msg=content,
                         #                  post_date=int(time.time() * 1000))
                         # data.update({'post_date': int(time.time() * 1000)})
-                        receive_nickname = data['friend_nickname']
-                        receive_avatar_url = data['friend_avatar_url']
-                        send_nickname = data['nickname']
-                        send_avatar_url = data['mine_avatar_url']
-                        data['user_id'] = receive_id
-                        data['ismineChat'] = 1
-                        data['friend_id'] = send_id
-                        data['friend_nickname'] = send_nickname
-                        data['friend_avatar_url'] = send_avatar_url
-                        data['nickname'] = receive_nickname
-                        data['mine_avatar_url'] = receive_avatar_url
-                        data['post_date'] = int(time.time() * 1000)
+                        # receive_nickname = data['friend_nickname']
+                        # receive_avatar_url = data['friend_avatar_url']
+                        # send_nickname = data['nickname']
+                        # send_avatar_url = data['mine_avatar_url']
+                        # data['user_id'] = receive_id
+                        # data['ismineChat'] = 1
+                        # data['friend_id'] = send_id
+                        # data['friend_nickname'] = send_nickname
+                        # data['friend_avatar_url'] = send_avatar_url
+                        # data['nickname'] = receive_nickname
+                        # data['mine_avatar_url'] = receive_avatar_url
+                        data['receivedTime'] = int(time.time() * 1000)
                         receive_ws = wsEntity.ws  # 接收者
                         await receive_ws.send_text(data.__str__())
             else:
