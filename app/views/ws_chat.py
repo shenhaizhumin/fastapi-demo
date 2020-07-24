@@ -124,6 +124,7 @@ class Echo(WebSocketEndpoint):
                         send_nickname = data['nickname']
                         send_avatar_url = data['mine_avatar_url']
                         data['user_id'] = receive_id
+                        data['ismineChat'] = 1
                         data['friend_id'] = send_id
                         data['friend_nickname'] = send_nickname
                         data['friend_avatar_url'] = send_avatar_url
