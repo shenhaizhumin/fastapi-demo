@@ -17,6 +17,7 @@ from app.models.user_info import UserInfo
 import json
 from app.response import BaseError, BaseResponse
 from app.models.chat_message import P2pMessage
+import uuid
 
 '''
 chatMsg.content = msg
@@ -130,6 +131,7 @@ class Echo(WebSocketEndpoint):
                         # data['nickname'] = receive_nickname
                         # data['mine_avatar_url'] = receive_avatar_url
                         data['receivedTime'] = int(time.time() * 1000)
+                        data['UId'] = uuid.uuid1()
                         receive_ws = wsEntity.ws  # 接收者
                         await receive_ws.send_text(data.__str__())
             else:
