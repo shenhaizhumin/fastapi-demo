@@ -132,6 +132,7 @@ class Echo(WebSocketEndpoint):
                         # data['mine_avatar_url'] = receive_avatar_url
                         data['receivedTime'] = int(time.time() * 1000)
                         data['UId'] = uuid.uuid1()
+                        data['messageStatus'] = 1
                         receive_ws = wsEntity.ws  # 接收者
                         await receive_ws.send_text(data.__str__())
             else:
