@@ -75,7 +75,7 @@ async def validation_exception_handler(request, exc):
     fastapi_logger.error(exc.detail)
     return JSONResponse(
         status_code=200,
-        content={"message": f"{str(exc.detail)}", 'code': error_code},
+        content={"message": f"{str(exc)}", 'code': error_code},
     )
 
 
