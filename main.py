@@ -72,7 +72,7 @@ async def http_exception_handler(request, exc):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
-    fastapi_logger.error(exc.detail)
+    fastapi_logger.error(exc)
     return JSONResponse(
         status_code=200,
         content={"message": f"{str(exc)}", 'code': error_code},
