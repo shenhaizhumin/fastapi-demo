@@ -27,7 +27,7 @@ async def get(x: str = Form(...)):
 
 @login_router.post(tokenUrl)
 async def login(req: Request, schema: PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    logging.info('login-------------- args:{}'.format(json.dumps(schema)))
+    logging.info('login-------------- args:{}'.format(schema))
     username = schema.username
     if re.match(mobile_pattern, username):
         user = db.query(UserInfo).filter_by(mobile=username).first()
