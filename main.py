@@ -55,7 +55,7 @@ async def unicorn_exception_handler(request: Request, exc: BaseError):
 @app.middleware('http')
 async def middleware(req: Request, call_next):
     start_time = time.time()
-    resp: StreamingResponse = await call_next(req)
+    resp = await call_next(req)
     process_time = time.time() - start_time
     resp.headers['process-time'] = str(process_time)
     return resp
