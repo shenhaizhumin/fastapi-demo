@@ -18,7 +18,6 @@ import time
 from starlette.routing import Route, WebSocketRoute
 from app.views.ws_chat import Homepage, Echo
 from app.settings import logger
-from web.index import index_router
 
 
 routes = [
@@ -32,7 +31,6 @@ app.include_router(user_router)
 app.include_router(upload_router)
 app.include_router(moment_router)
 app.include_router(ws_router)
-app.include_router(index_router)
 
 
 @app.exception_handler(BaseError)
