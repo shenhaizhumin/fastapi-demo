@@ -27,7 +27,6 @@ async def get(x: str = Form(...)):
 
 @login_router.post(tokenUrl)
 async def login(req: Request, schema: PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    logger.info('login-------------- args:{}'.format(schema))
     username = schema.username
     if re.match(mobile_pattern, username):
         user = db.query(UserInfo).filter_by(mobile=username).first()
@@ -57,7 +56,6 @@ async def login(req: Request, schema: PasswordRequestForm = Depends(), db: Sessi
     user.latest_ip = req.client.host
     user.latest_time = datetime.datetime.now()
     db.commit()
-    logger.info('response ----->{}'.format(user))
     return BaseResponse(data=UserOutSchema.from_orm(user))
 
 
