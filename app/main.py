@@ -19,7 +19,7 @@ from starlette.routing import Route, WebSocketRoute
 from app.views.ws_chat import Homepage, Echo
 from app.settings import logger
 
-
+# 6BD4-5C9C-D45A-0873 E656-416D-6C0E-1E53 6AA5-4BEF-8817-3D37 007C-D06A-712C-6823
 routes = [
     Route("/", Homepage),
     WebSocketRoute("/ws", Echo)
