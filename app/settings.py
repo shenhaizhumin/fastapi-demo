@@ -18,15 +18,16 @@ formatter = logging.Formatter(
 
 # handler.setFormatter(formatter)
 
-cur_path = os.path.abspath(os.path.curdir)
-print(cur_path)
-# 当前文件的父路径
-father_path = os.path.abspath(os.path.dirname(cur_path) + os.path.sep + ".")
-print(father_path)
-
+# cur_path = os.path.abspath(os.path.curdir)
+# print(cur_path)
+# # 当前文件的父路径
+# father_path = os.path.abspath(os.path.dirname(cur_path) + os.path.sep + ".")
+# print(father_path)
+#
 file_path = os.path.abspath(__file__)
-project_dir = file_path[: file_path.rfind('app')]
-conf_path = os.path.join(project_dir, 'etc', 'config.ini')
+# project_dir = file_path[: file_path.rfind('views')]
+par_dir = os.path.dirname(file_path)
+conf_path = os.path.join(par_dir, 'etc', 'config.ini')
 print(conf_path)
 
 # 读取配置信息
@@ -40,8 +41,8 @@ image_dirname = files_conf['image_dirname']
 domain_name = files_conf['domain_name']
 
 # 添加日志记录
-#log = Log(**log_conf)
-#logger = log.logger
+# log = Log(**log_conf)
+# logger = log.logger
 # log_conf = dict()
 # for k in conf.options("logging"):
 #     if k == "multiprocess":
