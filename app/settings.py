@@ -2,6 +2,7 @@ import os
 import configparser
 import redis
 from passlib.context import CryptContext
+# from app.util.LogUtil import LogUtil
 
 # from fastapi.logger import logger
 # from logging.handlers import RotatingFileHandler
@@ -35,16 +36,15 @@ image_dirname = files_conf['image_dirname']
 domain_name = files_conf['domain_name']
 
 # 添加日志记录
-log_conf = dict()
-for k in conf.options("logging"):
-    if k == "multiprocess":
-        log_conf[k] = conf.getboolean("logging", k)
-    else:
-        log_conf[k] = conf.get("logging", k)
-print(log_conf)
-log_conf.update({'formatter': formatter})
 #log = Log(**log_conf)
 #logger = log.logger
+# log_conf = dict()
+# for k in conf.options("logging"):
+#     if k == "multiprocess":
+#         log_conf[k] = conf.getboolean("logging", k)
+#     else:
+#         log_conf[k] = conf.get("logging", k)
+# LogUtil(**log_conf)
 # logger = LogUtil(**log_conf).logger
 # logging.basicConfig(**log_conf)
 
