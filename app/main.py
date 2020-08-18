@@ -17,7 +17,7 @@ import time
 # 路由
 from starlette.routing import Route, WebSocketRoute
 from app.views.ws_chat import Homepage, Echo
-from app.settings import logger
+# from app.settings import logger
 
 # 6BD4-5C9C-D45A-0873 E656-416D-6C0E-1E53 6AA5-4BEF-8817-3D37 007C-D06A-712C-6823
 routes = [
@@ -35,7 +35,7 @@ app.include_router(ws_router)
 
 @app.exception_handler(BaseError)
 async def unicorn_exception_handler(request: Request, exc: BaseError):
-    logger.error(exc.message)
+    # logger.error(exc.message)
     return JSONResponse(
         status_code=200,
         content={"message": exc.message, "code": exc.code},
@@ -73,7 +73,7 @@ async def middleware(req: Request, call_next):
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request, exc):
-    logger.error(exc.detail)
+    # logger.error(exc.detail)
     return JSONResponse(
         # status_code=exc.status_code,
         content={"message": f"StarletteHTTPException:{exc.detail}", 'code': error_code},
@@ -82,7 +82,7 @@ async def http_exception_handler(request, exc):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
-    logger.error(exc)
+    # logger.error(exc)
     return JSONResponse(
         status_code=200,
         content={"message": f"{str(exc)}", 'code': error_code},
