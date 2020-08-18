@@ -2,7 +2,7 @@ import os
 import configparser
 import redis
 from passlib.context import CryptContext
-from app.util.LogUtil import LogUtil
+# from app.util.LogUtil import LogUtil
 
 cur_path = os.path.abspath(os.path.curdir)
 print(cur_path)
@@ -23,13 +23,13 @@ domain_name = files_conf['domain_name']
 
 
 # 添加日志记录
-log_conf = dict()
-for k in conf.options("logging"):
-    if k == "multiprocess":
-        log_conf[k] = conf.getboolean("logging", k)
-    else:
-        log_conf[k] = conf.get("logging", k)
-LogUtil(**log_conf)
+# log_conf = dict()
+# for k in conf.options("logging"):
+#     if k == "multiprocess":
+#         log_conf[k] = conf.getboolean("logging", k)
+#     else:
+#         log_conf[k] = conf.get("logging", k)
+# LogUtil(**log_conf)
 
 
 """
