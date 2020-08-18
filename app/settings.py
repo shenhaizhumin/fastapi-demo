@@ -4,6 +4,20 @@ import redis
 from passlib.context import CryptContext
 # from app.util.LogUtil import LogUtil
 
+# from fastapi.logger import logger
+# from logging.handlers import RotatingFileHandler
+import logging
+from app.util.log_util import Log
+
+formatter = logging.Formatter(
+    "[%(asctime)s.%(msecs)03d] %(levelname)s [%(thread)d] - %(message)s", "%Y-%m-%d %H:%M:%S")
+# handler = RotatingFileHandler('error.log', backupCount=0)
+# handler.setLevel(logging.ERROR)
+# logging.getLogger("fastapi")
+# logger.addHandler(handler)
+
+# handler.setFormatter(formatter)
+
 cur_path = os.path.abspath(os.path.curdir)
 print(cur_path)
 # 当前文件的父路径
@@ -21,7 +35,6 @@ for k in conf.options("file"):
 image_dirname = files_conf['image_dirname']
 domain_name = files_conf['domain_name']
 
-
 # 添加日志记录
 # log_conf = dict()
 # for k in conf.options("logging"):
@@ -30,7 +43,8 @@ domain_name = files_conf['domain_name']
 #     else:
 #         log_conf[k] = conf.get("logging", k)
 # LogUtil(**log_conf)
-
+# logger = LogUtil(**log_conf).logger
+# logging.basicConfig(**log_conf)
 
 """
     redis config

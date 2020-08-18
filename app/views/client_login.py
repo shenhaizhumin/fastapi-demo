@@ -13,7 +13,7 @@ from app.schema.user_schema import UserOutSchema, mobile_pattern, email_pattern
 import re
 from app.settings import pwd_context
 import datetime
-import logging
+from app.settings import logger
 import json
 
 login_router = APIRouter()
@@ -27,7 +27,6 @@ async def get(x: str = Form(...)):
 
 @login_router.post(tokenUrl)
 async def login(req: Request, schema: PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    logging.info('login-------------- args:{}'.format(schema))
     username = schema.username
     if re.match(mobile_pattern, username):
         user = db.query(UserInfo).filter_by(mobile=username).first()
