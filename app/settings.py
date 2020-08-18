@@ -22,7 +22,7 @@ print(cur_path)
 # 当前文件的父路径
 father_path = os.path.abspath(os.path.dirname(cur_path) + os.path.sep + ".")
 print(father_path)
-conf_path = os.path.join(cur_path, 'etc', 'config.ini')
+conf_path = os.path.join(f'{cur_path}/app', 'etc', 'config.ini')
 print(conf_path)
 # 读取配置信息
 conf = configparser.ConfigParser()
@@ -43,8 +43,8 @@ for k in conf.options("logging"):
         log_conf[k] = conf.get("logging", k)
 print(log_conf)
 log_conf.update({'formatter': formatter})
-log = Log(**log_conf)
-logger = log.logger
+#log = Log(**log_conf)
+#logger = log.logger
 # logger = LogUtil(**log_conf).logger
 # logging.basicConfig(**log_conf)
 
