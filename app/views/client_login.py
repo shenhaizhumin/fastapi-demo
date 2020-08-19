@@ -13,7 +13,7 @@ from app.schema.user_schema import UserOutSchema, mobile_pattern, email_pattern
 import re
 from app.settings import pwd_context
 import datetime
-from app.settings import logger
+# from app.settings import logger
 import json
 
 login_router = APIRouter()

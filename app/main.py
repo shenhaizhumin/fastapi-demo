@@ -17,7 +17,7 @@ import time
 # 路由
 from starlette.routing import Route, WebSocketRoute
 from app.views.ws_chat import Homepage, Echo
-from app.settings import logger
+# from app.settings import logger
 
 # 6BD4-5C9C-D45A-0873 E656-416D-6C0E-1E53 6AA5-4BEF-8817-3D37 007C-D06A-712C-6823
 routes = [
@@ -35,16 +35,36 @@ app.include_router(ws_router)
 
 @app.exception_handler(BaseError)
 async def unicorn_exception_handler(request: Request, exc: BaseError):
-    logger.error(exc.message)
+    # logger.error(exc.message)
     return JSONResponse(
         status_code=200,
         content={"message": exc.message, "code": exc.code},
     )
 
 
+# a={'scope': {'type': 'http', 'http_version': '1.1', 'server': ('127.0.0.1', 8021), 'client': ('127.0.0.1', 51866),
+#              'scheme': 'http', 'method': 'POST', 'root_path': '', 'path': '/login', 'raw_path': b'/login', 'query_string': b'',
+#              'headers': [(b'host', b'127.0.0.1:8021'),
+#                          (b'connection', b'keep-alive'),
+#                          (b'content-length', b'44'),
+#                          (b'accept', b'application/json'),
+#                          (b'origin', b'http://127.0.0.1:8021'),
+#                          (b'user-agent', b'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3775.400 QQBrowser/10.6.4208.400'),
+#                          (b'content-type', b'application/x-www-form-urlencoded'),
+#                          (b'referer', b'http://127.0.0.1:8021/docs'),
+#                          (b'accept-encoding', b'gzip, deflate, br'),
+#                          (b'accept-language', b'zh-CN,zh;q=0.9')],
+#              'fastapi_astack': <contextlib.AsyncExitStack object at 0x05D847D8>,
+#   'app': <fastapi.applications.FastAPI object at 0x05CB2B20>},
+# '_receive': <bound method RequestResponseCycle.receive of <uvicorn.protocols.http.h11_impl.RequestResponseCycle object at 0x05D847F0>>,
+#                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           '_send': <function empty_send at 0x04EFF928>, '_stream_consumed': False, '_is_disconnected': False}
+
 @app.middleware('http')
 async def middleware(req: Request, call_next):
     start_time = time.time()
+    req_dict = req.__dict__
+    print(''
+          '')
     resp = await call_next(req)
     process_time = time.time() - start_time
     resp.headers['process-time'] = str(process_time)
@@ -53,7 +73,7 @@ async def middleware(req: Request, call_next):
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request, exc):
-    logger.error(exc.detail)
+    # logger.error(exc.detail)
     return JSONResponse(
         # status_code=exc.status_code,
         content={"message": f"StarletteHTTPException:{exc.detail}", 'code': error_code},
@@ -62,7 +82,7 @@ async def http_exception_handler(request, exc):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
-    logger.error(exc)
+    # logger.error(exc)
     return JSONResponse(
         status_code=200,
         content={"message": f"{str(exc)}", 'code': error_code},

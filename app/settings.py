@@ -2,6 +2,7 @@ import os
 import configparser
 import redis
 from passlib.context import CryptContext
+# from app.util.LogUtil import LogUtil
 
 # from fastapi.logger import logger
 # from logging.handlers import RotatingFileHandler
@@ -17,13 +18,18 @@ formatter = logging.Formatter(
 
 # handler.setFormatter(formatter)
 
-cur_path = os.path.abspath(os.path.curdir)
-print(cur_path)
-# 当前文件的父路径
-father_path = os.path.abspath(os.path.dirname(cur_path) + os.path.sep + ".")
-print(father_path)
-conf_path = os.path.join('{}/app'.format(cur_path), 'etc', 'config.ini')
+# cur_path = os.path.abspath(os.path.curdir)
+# print(cur_path)
+# # 当前文件的父路径
+# father_path = os.path.abspath(os.path.dirname(cur_path) + os.path.sep + ".")
+# print(father_path)
+#
+file_path = os.path.abspath(__file__)
+# project_dir = file_path[: file_path.rfind('views')]
+par_dir = os.path.dirname(file_path)
+conf_path = os.path.join(par_dir, 'etc', 'config.ini')
 print(conf_path)
+
 # 读取配置信息
 conf = configparser.ConfigParser()
 conf.read(conf_path)
@@ -35,16 +41,15 @@ image_dirname = files_conf['image_dirname']
 domain_name = files_conf['domain_name']
 
 # 添加日志记录
-log_conf = dict()
-for k in conf.options("logging"):
-    if k == "multiprocess":
-        log_conf[k] = conf.getboolean("logging", k)
-    else:
-        log_conf[k] = conf.get("logging", k)
-print(log_conf)
-log_conf.update({'formatter': formatter})
-log = Log(**log_conf)
-logger = log.logger
+# log = Log(**log_conf)
+# logger = log.logger
+# log_conf = dict()
+# for k in conf.options("logging"):
+#     if k == "multiprocess":
+#         log_conf[k] = conf.getboolean("logging", k)
+#     else:
+#         log_conf[k] = conf.get("logging", k)
+# LogUtil(**log_conf)
 # logger = LogUtil(**log_conf).logger
 # logging.basicConfig(**log_conf)
 
