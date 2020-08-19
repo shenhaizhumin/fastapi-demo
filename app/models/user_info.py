@@ -38,7 +38,7 @@ from sqlalchemy.orm import relationship
 
 
 class UserInfo(Base):
-    __tablename__ = 'user'
+    __tablename__ = 'user_info'
     id = Column('id', Integer, primary_key=True)
     username = Column('username', String, default=token_util.generate_random_string(length=random.randint(4, 10),
                                                                                     type_='word'), unique=True)

@@ -1,0 +1,37 @@
+https://www.liaosam.com/wordpress-on-linode-vps-setup-ssl-https-guide.html
+
+怎么给网站从 HTTP 换用 HTTPS。总体来说分为四个步骤：
+安装 SSL 证书、部署 SSL 证书、修改网站配置文件conf 、网站 URL 中 HTTP 替换为 HTTPS。
+
+一、安装 SSL 证书（Let’s Encrypt）
+SSL 证书有免费的也有收费的。具体就不科普了。免费的也可以用，如大名鼎鼎的 Let’s Encrypt SSL certificates.
+(2017.6月更新：Let’s Encrypt 已正式更名为 Certbot )
+
+本文主要介绍 VPS 怎样安装部署 SSL 证书并启用 HTTPS。
+
+下载和安装证书
+1）先安装 git 包
+
+连接上 VPS 后，在 Xshell 上粘贴命令（每条命令用鼠标右键复制粘贴，回车执行即可。不支持 ctrl+v 粘贴）：
+
+sudo yum install git
+2）下载证书包
+
+sudo git clone https://github.com/certbot/certbot /opt/letsencrypt
+3）进入证书目录
+
+cd /opt/letsencrypt
+
+二、创建并部署 Let’s Encrypt SSL 证书
+继续命令行执行：
+
+./certbot-auto certonly --standalone --email 2897xxx@qq.com -d www.example.com -d example.com
+注意：
+
+上面命令中的 email 地址是方便你接收证书密钥回复以及紧急信息的，尽量填写企业邮箱或者 gmail 邮箱，QQ邮箱应该也可以，你可以填写试试。
+你的网站域名如果是 xyz.com，那么上面就改为：-d www.xyz.com -d xyz.com
+建议先把上面命令复制粘贴到记事本里，把 www.example.com 和 example.com 先替换好，然后粘贴执行。
+
+然后等待：
+
+

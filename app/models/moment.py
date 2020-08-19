@@ -10,7 +10,7 @@ class Moment(Base):
     content = Column('content', String)
     # user_nickname = Column('user_nickname', String)
     # user_icon = Column('user_icon', String)
-    user_id = Column('user_id', Integer, ForeignKey('user.id'))
+    user_id = Column('user_id', Integer, ForeignKey('user_info.id'))
     publish_time = Column('publish_time', DateTime, default=datetime.now())
     # 链接地址
     content_url = Column('content_url', String)
@@ -28,7 +28,7 @@ class Collect(Base):
     __tablename__ = 'collect'
     id = Column('id', Integer, primary_key=True)
     create_time = Column('create_time', DateTime, default=datetime.now())
-    operator_user_id = Column('operator_user_id', Integer, ForeignKey('user.id'))
+    operator_user_id = Column('operator_user_id', Integer, ForeignKey('user_info.id'))
     # user_nickname = Column('user_nickname', String)
     # user_avatar_url = Column('user_avatar_url', String)
     moment_id = Column('moment_id', Integer, ForeignKey('moment.id'))
@@ -40,7 +40,7 @@ class Comment(Base):
     id = Column('id', Integer, primary_key=True)
     content = Column('content', String)
     publish_time = Column('publish_time', DateTime, default=datetime.now())
-    operator_user_id = Column('operator_user_id', Integer, ForeignKey('user.id'))
+    operator_user_id = Column('operator_user_id', Integer, ForeignKey('user_info.id'))
     # user_nickname = Column('user_nickname', String)
     moment_id = Column('moment_id', Integer, ForeignKey('moment.id'))
     publisher = relationship('UserInfo')

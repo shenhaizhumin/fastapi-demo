@@ -6,29 +6,29 @@ import random
 import base64
 import hmac
 from hashlib import sha1, sha256
-import bcrypt
-from datetime import datetime, timedelta
-from app.settings import SECRET_KEY, ALGORITHM
-import jwt
+# import bcrypt
+# from datetime import datetime, timedelta
+# from app.settings import SECRET_KEY, ALGORITHM
+# import jwt
 
 
-def create_access_token(*, data: dict, expires_delta: timedelta = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=60 * 24)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt.decode('utf8')
-
-
-def generate_hash_password(password: str):
-    """
-    :arg password
-        生成hash密码
-    """
-    return bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt(12)).decode('utf8')
+# def create_access_token(*, data: dict, expires_delta: timedelta = None):
+#     to_encode = data.copy()
+#     if expires_delta:
+#         expire = datetime.utcnow() + expires_delta
+#     else:
+#         expire = datetime.utcnow() + timedelta(minutes=60 * 24)
+#     to_encode.update({"exp": expire})
+#     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+#     return encoded_jwt.decode('utf8')
+#
+#
+# def generate_hash_password(password: str):
+#     """
+#     :arg password
+#         生成hash密码
+#     """
+#     return bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt(12)).decode('utf8')
 
 
 def generate_by_sha1_random():

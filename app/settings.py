@@ -22,7 +22,7 @@ print(cur_path)
 # 当前文件的父路径
 father_path = os.path.abspath(os.path.dirname(cur_path) + os.path.sep + ".")
 print(father_path)
-conf_path = os.path.join(cur_path, 'etc', 'config.ini')
+conf_path = os.path.join('{}/app'.format(cur_path), 'etc', 'config.ini')
 print(conf_path)
 # 读取配置信息
 conf = configparser.ConfigParser()

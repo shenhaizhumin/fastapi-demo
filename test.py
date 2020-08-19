@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 import random
 
 # db_url = conf.get('db.url', 'pg_url')
-uri = f"postgresql://zengqi:123456@39.107.77.70:5432/testdb"
+uri = f"postgresql://zengqi:123456@39.107.77.70:5432/moment_db"
 engine = create_engine(uri)
 metadata = MetaData(bind=engine)
 Base = declarative_base(bind=engine)
@@ -33,7 +33,7 @@ db_session = get_db_session()
 
 
 class UserInfo(Base):
-    __tablename__ = 'user'
+    __tablename__ = 'user_info'
     id = Column('id', Integer, primary_key=True)
     username = Column('username', String, default=token_util.generate_random_string(length=random.randint(4, 10),
                                                                                     type_='word'), unique=True)
@@ -48,7 +48,7 @@ class UserInfo(Base):
     mobile = Column('mobile', String)
     avatar_url = Column('avatar_url', String)
     password = Column('password', String)
-    role_id = Column('role_id', Integer, ForeignKey('user_role.id'))
+    role_id = Column('role_id', Integer, ForeignKey('user_info.id'))
     # avatar_id = Column('avatar_id', Integer, ForeignKey('image.id'))
     user_role = relationship('UserRole')
     moment_image = Column('moment_image', String)
@@ -86,7 +86,7 @@ class Moment(Base):
     content = Column('content', String)
     # user_nickname = Column('user_nickname', String)
     # user_icon = Column('user_icon', String)
-    user_id = Column('user_id', Integer, ForeignKey('user.id'))
+    user_id = Column('user_id', Integer, ForeignKey('user_info.id'))
     publish_time = Column('publish_time', DateTime, default=datetime.now())
     # 链接地址
     content_url = Column('content_url', String)
@@ -104,7 +104,7 @@ class Collect(Base):
     __tablename__ = 'collect'
     id = Column('id', Integer, primary_key=True)
     create_time = Column('create_time', DateTime, default=datetime.now())
-    operator_user_id = Column('operator_user_id', Integer, ForeignKey('user.id'))
+    operator_user_id = Column('operator_user_id', Integer, ForeignKey('user_info.id'))
     # user_nickname = Column('user_nickname', String)
     # user_avatar_url = Column('user_avatar_url', String)
     moment_id = Column('moment_id', Integer, ForeignKey('moment.id'))
@@ -116,7 +116,7 @@ class Comment(Base):
     id = Column('id', Integer, primary_key=True)
     content = Column('content', String)
     publish_time = Column('publish_time', DateTime, default=datetime.now())
-    operator_user_id = Column('operator_user_id', Integer, ForeignKey('user.id'))
+    operator_user_id = Column('operator_user_id', Integer, ForeignKey('user_info.id'))
     # user_nickname = Column('user_nickname', String)
     moment_id = Column('moment_id', Integer, ForeignKey('moment.id'))
     # user = relationship('UserInfo', lazy='dynamic')
@@ -154,7 +154,7 @@ class P2pMessage(Base):
     # latest_msg = Column('latest_msg', String)
 
 
-Base.metadata.drop_all(bind=engine)
+# Base.metadata.drop_all(bind=engine)
 # 建表
 Base.metadata.create_all(bind=engine)
 engine.dispose()

@@ -1,0 +1,111 @@
+首先，检查你的 Let’s Encrypt 证书是否管理程序是 Certbot（你是否安装了 Certbot）。
+
+执行命令：
+
+find / -name "certbot"
+如果找到类似于 /bin/certbot  的结果，那么说明已安装了 Certbot（LNMP 1.4 的 SSL安装集成进去了，默认是装了的。LNMP1.3 则是以前是老的 lets encrpyt 程序）；
+
+如果没有找到，先下载 Certbot 安装 Let’s Encrypt 证书。安装 Certbot 并给网站安装 SSL 证书，参考这篇教程：
+
+注意如果你以前用过老的 Let's Encrypt 证书程序，那么要先彻底删除以前老的程序，才能安装 Certbot，不然会出错。逐个执行下面3行命令，把 DOMAIN 换成你的域名，如 www.xyz.com（具体是什么可以去/etc/letsencrypt/live 目录下看一下）
+
+rm -rf /etc/letsencrypt/live/DOMAIN
+rm -rf /etc/letsencrypt/renewal/DOMAIN.conf
+rm -rf /etc/letsencrypt/archive/DOMAIN
+rm -rf /opt/letsencrypt
+
+即可重新安装 Certbot。
+OK，如果你已经安装好了 Certbot，给网站安装好了 SSL 证书，那么进入本篇文章的主题。
+
+一、检查 Cron 服务状态
+service crond(cron) status
+如果执行后提示：crond(cron) (pid  xxxxx) is running…  代表正常运行中，则可以跳过下面第二、三两步 。
+
+如果提示错误，不识别的服务，则先按照 2）和 3）执行安装和启动。
+
+二、安装 cron 服务
+依次输入以下 2 条命令并回车执行
+
+yum -y install vixie-cron
+
+yum -y install crontabs
+成功安装 Cron 之后，启动 cron 服务。
+
+三、启动 Cron 服务
+service crond start
+执行后会出现：Starting crond:         [  OK  ]  的提示，表明启动成功。
+
+继续执行开机启动服务命令，把 Cron 加入开机启动的服务列表中：
+
+chkconfig --level 345 crond on
+安装完检查一下 Cron 服务状态
+
+service crond status
+如果提示：crond (pid  xxxxx) is running…  代表正常运行中。
+
+四、搜索 cron 文件所在位置
+输入命令：
+
+find / -name "cron"
+找到如下结果： /var/spool/cron
+/var/log/cron 这个是日志文件位置，不管它
+/var/spool/cron 这里是所有的自动执行任务的 cron 文件存放位置
+
+用 Xftp 打开 /var/spool/cron，看看 cron 目录下有没有文件。
+
+如果没有，创建 cron 文件，按照步骤五。
+如果有，跳过步骤五。
+
+
+五、创建 Cron 文件
+输入以下命令：
+
+crontab -e
+输入此命令后，提示如下：(提示为选择编辑器编辑自动续期脚本文件(/var/spool/cron/crontabs/root) select-editor（重选编辑器）)
+
+no crontab for root – using an empty one
+
+此时相当于准备创建一个 root 用户的空白 crontab 文件。直接按住 shift+分号(打出冒号来)，然后输入 q，回车。退出编辑文件状态。
+
+此时会提示创建了一个 new crontab （只不过是个空的文件）。接着我们用 Xftp 把 /var/spool/cron 这个路径下生成的名为 root 的文件下载下来，用 Notepad++ 编辑。
+
+六、添加编辑 Certbot 的自动续期命令
+在 root cron 文件中，复制以下代码，粘贴，保存，上传。
+
+0 3 */7 * * /bin/certbot renew --renew-hook "/etc/init.d/nginx reload"
+以上含义是：每隔 7 天，夜里 3 点整自动执行检查续期命令一次。续期完成后，重启 nginx 服务。
+
+七、重启 Cron 服务，使之生效
+service crond restart
+重启之后，一切搞定！
+
+八、你想手动尝试 Certbot 证书更新？
+一般是直接使用 renew 命令，即：
+
+/bin/certbot renew
+但是现在 Certbot 也会自己判断了，没有快到期之前，它也觉得没必要频繁续期。所以看看我们手动去续期的结果：
+
+由于我们之前网站是 2月14日安装的 Let’s Encrypt 证书，到5月14日才到期。现在去 renew 太早了，Certbot 直接把我们给否了。
+
+九、Certbot 到底在证书到期前多久会去续期呢？
+可以查看证书的 Renewal 配置文件
+在 /etc/letsencrypt/renewal 目录下，有你的网站的 renewal 的配置文件：www.xyz.com.conf
+
+下载到本地，notepad++ 打开，可以看到具体配置信息如下：
+# renew_before_expiry = 30 days
+version = 1.7.0
+archive_dir = /etc/letsencrypt/archive/studio.dicastal.citic
+cert = /etc/letsencrypt/live/studio.dicastal.citic/cert.pem
+privkey = /etc/letsencrypt/live/studio.dicastal.citic/privkey.pem
+chain = /etc/letsencrypt/live/studio.dicastal.citic/chain.pem
+fullchain = /etc/letsencrypt/live/studio.dicastal.citic/fullchain.pem
+
+# Options used in the renewal process
+[renewalparams]
+authenticator = standalone
+account = 833cda80b253ad50e402898de9be9130
+server = https://acme-v02.api.letsencrypt.org/directory
+从这个文件中我们可以看到，第一行虽然用 # 注释掉不生效了，但是我们可以知道 Certbot 会在证书到期前30天开始重新续期。
+
+十、耐心等待验证
+
