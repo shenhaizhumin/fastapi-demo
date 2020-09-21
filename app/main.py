@@ -18,6 +18,7 @@ import time
 from starlette.routing import Route, WebSocketRoute
 from app.views.ws_chat import Homepage, Echo
 # from app.settings import logger
+from app.settings import error_logger, info_logger
 
 # 6BD4-5C9C-D45A-0873 E656-416D-6C0E-1E53 6AA5-4BEF-8817-3D37 007C-D06A-712C-6823
 routes = [
@@ -58,14 +59,18 @@ async def unicorn_exception_handler(request: Request, exc: BaseError):
 #   'app': <fastapi.applications.FastAPI object at 0x05CB2B20>},
 # '_receive': <bound method RequestResponseCycle.receive of <uvicorn.protocols.http.h11_impl.RequestResponseCycle object at 0x05D847F0>>,
 #                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           '_send': <function empty_send at 0x04EFF928>, '_stream_consumed': False, '_is_disconnected': False}
+import traceback
+
 
 @app.middleware('http')
 async def middleware(req: Request, call_next):
+    info_logger.info(f"scope:{req.scope}")
     start_time = time.time()
-    req_dict = req.__dict__
-    print(''
-          '')
-    resp = await call_next(req)
+    try:
+        resp = await call_next(req)
+    except Exception as e:
+        error_logger.error(traceback.format_exc())
+        return JSONResponse(content={'message': f"{e}", "code": -200})
     process_time = time.time() - start_time
     resp.headers['process-time'] = str(process_time)
     return resp

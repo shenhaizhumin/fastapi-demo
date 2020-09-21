@@ -2,15 +2,17 @@ import os
 import configparser
 import redis
 from passlib.context import CryptContext
-# from app.util.LogUtil import LogUtil
+from app.util.log_util2 import get_path, get_logger
 
 # from fastapi.logger import logger
 # from logging.handlers import RotatingFileHandler
 import logging
-from app.util.log_util import Log
 
 formatter = logging.Formatter(
     "[%(asctime)s.%(msecs)03d] %(levelname)s [%(thread)d] - %(message)s", "%Y-%m-%d %H:%M:%S")
+
+info_logger = get_logger(get_path('./logs', 'app_info.log'))
+error_logger = get_logger(get_path('./logs', 'app_error.log'))
 # handler = RotatingFileHandler('error.log', backupCount=0)
 # handler.setLevel(logging.ERROR)
 # logging.getLogger("fastapi")
