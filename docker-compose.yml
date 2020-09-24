@@ -29,12 +29,12 @@ services:
     build:
       context: /home/deploy/docker-compose-test/moment-server
       dockerfile: Dockerfile
-      container_name: moment-server
-      environment:
-        DATABASE_URI: mysql://zengqi:123456@172.10.11.13:3306/test_db
-      expose:
-        - 8032
-      ports:
-        - "8032:8032"
-      comand: java -jar /app.jar
-      restart: on-failure
+    container_name: moment-server
+    environment:
+      DATABASE_URI: mysql://zengqi:123456@172.10.11.13:3306/test_db
+    expose:
+      - 8032
+     ports:
+      - "8032:8032"
+    comand: java -jar /app.jar
+    restart: on-failure
