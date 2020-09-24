@@ -83,19 +83,33 @@ EnvVarLoader.add_implicit_resolver('!path', path_matcher, None)
 EnvVarLoader.add_constructor('!path', path_constructor)
 
 # _env = os.environ.get('CFG_ENV')
-_config_path = os.path.abspath(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir)) + '/configs.yml'
+_config_path = os.path.abspath(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir)) + 'configs.yml'
 conf_doc = yaml.load(open(_config_path), Loader=EnvVarLoader)
 # conf = conf_doc[_env]
-image_dirname = conf_doc['file']['image_dirname']
-domain_name = conf_doc['file']['domain_name']
 
-redis_connect = redis.Redis(conf_doc['db.redis'])
-ACCESS_TOKEN_EXPIRE_MINUTES = conf_doc['jwt.extars']['expire_minutes']
-SECRET_KEY = conf_doc['jwt.extars']['algorithm']
-ALGORITHM = conf_doc['jwt.extars']['secret_key']
-tokenUrl = '/login'
-
-db_uri = conf_doc['db.test']['db_uri']
 log_dir = conf_doc['logging']['log_dir']
 info_logger = get_logger(get_path(log_dir, 'app_info.log'))
 error_logger = get_logger(get_path(log_dir, 'app_error.log'))
+
+image_dirname = conf_doc['file']['image_dirname']
+domain_name = conf_doc['file']['domain_name']
+
+redis_port = int(conf_doc['db.redis']['port'])
+redis_host = conf_doc['db.redis']['host']
+redis_database = int(conf_doc['db.redis']['db'])
+redis_connect = redis.Redis(host=redis_host, port=redis_port, db=redis_database)
+
+ACCESS_TOKEN_EXPIRE_MINUTES = int(conf_doc['jwt.extars']['expire_minutes'])
+SECRET_KEY = conf_doc['jwt.extars']['secret_key']
+ALGORITHM = conf_doc['jwt.extars']['algorithm']
+tokenUrl = '/login'
+
+db_uri = conf_doc['db.test']['db_uri']
+jwt_options = {
+    'verify_signature': True,
+    'verify_exp': True,
+    'verify_nbf': False,
+    'verify_iat': True,
+    'verify_aud': False
+}
+error_code = -200

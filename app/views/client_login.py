@@ -13,7 +13,7 @@ from app.schema.user_schema import UserOutSchema, mobile_pattern, email_pattern
 import re
 from app.settings import pwd_context
 import datetime
-# from app.settings import logger
+from app.settings import info_logger,redis_port,redis_host,redis_database,info_logger
 import json
 
 login_router = APIRouter()
@@ -27,6 +27,7 @@ async def get(x: str = Form(...)):
 
 @login_router.post(tokenUrl)
 async def login(req: Request, schema: PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    info_logger.info(f"host:{redis_host},{type(redis_host)},port:{redis_port},{type(redis_port)},database:{redis_database},{type(redis_database)}")
     username = schema.username
     if re.match(mobile_pattern, username):
         user = db.query(UserInfo).filter_by(mobile=username).first()

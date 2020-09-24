@@ -1,4 +1,4 @@
-from app.settings import redis_connect
+from app.settings import redis_connect,redis_port,redis_host,redis_database,info_logger
 
 
 class Cache:
