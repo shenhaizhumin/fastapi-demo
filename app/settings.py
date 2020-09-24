@@ -51,13 +51,13 @@ formatter = logging.Formatter(
 #
 # error_code = -200
 #
-# jwt_options = {
-#     'verify_signature': True,
-#     'verify_exp': True,
-#     'verify_nbf': False,
-#     'verify_iat': True,
-#     'verify_aud': False
-# }
+jwt_options = {
+    'verify_signature': True,
+    'verify_exp': True,
+    'verify_nbf': False,
+    'verify_iat': True,
+    'verify_aud': False
+}
 #
 # test_db = dict()
 # for k in conf.options('db.test'):
@@ -88,11 +88,13 @@ conf_doc = yaml.load(open(_config_path), Loader=EnvVarLoader)
 # conf = conf_doc[_env]
 image_dirname = conf_doc['file']['image_dirname']
 domain_name = conf_doc['file']['domain_name']
-
-redis_connect = redis.Redis(conf_doc['db.redis'])
+redis_port = int(conf_doc['db.redis']['port'])
+redis_host = conf_doc['db.redis']['host']
+redis_database = int(conf_doc['db.redis']['db'])
+redis_connect = redis.Redis(host=redis_host, port=redis_port, db=redis_database)
 ACCESS_TOKEN_EXPIRE_MINUTES = conf_doc['jwt.extars']['expire_minutes']
-SECRET_KEY = conf_doc['jwt.extars']['algorithm']
-ALGORITHM = conf_doc['jwt.extars']['secret_key']
+SECRET_KEY = conf_doc['jwt.extars']['secret_key']
+ALGORITHM = conf_doc['jwt.extars']['algorithm']
 tokenUrl = '/login'
 
 db_uri = conf_doc['db.test']['db_uri']

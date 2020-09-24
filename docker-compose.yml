@@ -36,5 +36,5 @@ services:
       - 8032
      ports:
       - "8032:8032"
-    comand: java -jar /app.jar
+    command: java -jar /app.jar
     restart: on-failure
