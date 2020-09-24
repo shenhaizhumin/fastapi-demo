@@ -1,0 +1,15 @@
+logging:
+  log_dir: ${LOG_DIR}
+db.test:
+  db_uri: ${DATABASE_URI}
+db.redis:
+  host: ${REDIS_HOST}
+  port: ${REDIS_PORT}
+  db: ${REDIS_DATABASE}
+file:
+  image_dirname: ${IMAGE_DIRNAME}
+  domain_name: ${DOMAIN_NAME}
+jwt.extars:
+  algorithm: ${ALGORITHM}
+  expire_minutes: ${EXPIRE_MINUTES}
+  secret_key: ${SECRET_KEY}

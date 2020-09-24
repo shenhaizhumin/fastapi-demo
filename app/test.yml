@@ -1,0 +1,6 @@
+application:
+  name: appName
+  developer:
+    - zhangsan
+    - lisi
+  logName: ${CML_PROFILE}

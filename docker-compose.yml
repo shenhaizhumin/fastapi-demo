@@ -1,0 +1,40 @@
+version: "2"
+services:
+  fastapi-study:
+    image: fastapi-study:v1.0
+    build:
+      context: /home/deploy/docker-compose-test/fastapi-study/
+      dockerfile: Dockerfile
+    container_name: fastapi-study
+    environment:
+      LOG_DIR: ./logs
+      DATABASE_URI: postgresql://zengqi:123456@172.17.252.98:5432/moment_db
+      REDIS_HOST: 172.17.252.98
+      REDIS_PORT: 6379
+      REDIS_DATABASE: 0
+      IMAGE_DIRNAME: /home/files/images/{filename}
+      DOMAIN_NAME: http://39.107.77.70:8888/files{filepath}
+      ALGORITHM: HS256
+      EXPIRE_MINUTES: 30
+      SECRET_KEY: abcdefg
+    expose:
+      - 8031
+    ports:
+      - "8031:8031"
+    command: uvicorn app.main:app --port 8031 --host 0.0.0.0
+    restart: on-failure
+
+  moment-server:
+    image: moment-server:v1.0
+    build:
+      context: /home/deploy/docker-compose-test/moment-server
+      dockerfile: Dockerfile
+      container_name: moment-server
+      environment:
+        DATABASE_URI: mysql://zengqi:123456@172.10.11.13:3306/test_db
+      expose:
+        - 8032
+      ports:
+        - "8032:8032"
+      comand: java -jar /app.jar
+      restart: on-failure

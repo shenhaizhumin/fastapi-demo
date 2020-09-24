@@ -11,3 +11,7 @@ sudo /etc/init.d/postgresql start | stop | restart
 alter(create) user username with password 'your passwd';
 设置权限
 grant ALL privileges on database 'your database name' to username;
+
+
+
+psql -U postgres -c 'SHOW config_file' 查看Postgres 安装路径
