@@ -97,7 +97,7 @@ redis_port = int(conf_doc['db.redis']['port'])
 redis_host = conf_doc['db.redis']['host']
 redis_database = int(conf_doc['db.redis']['db'])
 redis_connect = redis.Redis(host=redis_host, port=redis_port, db=redis_database)
-ACCESS_TOKEN_EXPIRE_MINUTES = conf_doc['jwt.extars']['expire_minutes']
+ACCESS_TOKEN_EXPIRE_MINUTES = int(conf_doc['jwt.extars']['expire_minutes'])
 SECRET_KEY = conf_doc['jwt.extars']['secret_key']
 ALGORITHM = conf_doc['jwt.extars']['algorithm']
 tokenUrl = '/login'
