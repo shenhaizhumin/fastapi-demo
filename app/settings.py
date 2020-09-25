@@ -36,7 +36,7 @@ formatter = logging.Formatter(
 # 读取配置信息
 file_path = os.path.abspath(__file__)
 par_dir = os.path.dirname(file_path)
-conf_path = os.path.join(par_dir, 'etc', 'config.ini')
+conf_path = os.path.join(par_dir, 'config', 'config.ini')
 print("conf_path:" + conf_path)
 conf_doc = configparser.ConfigParser()
 conf_doc.read(conf_path)
