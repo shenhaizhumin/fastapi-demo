@@ -55,27 +55,34 @@ formatter = logging.Formatter(
 # for k in conf.options('db.test'):
 #     test_db[k] = conf.get('db.test', k)
 
-import re
-import yaml
-
-path_matcher = re.compile(r'.*\$\{([^}^{]+)\}.*')
-
-
-def path_constructor(loader, node):
-    return os.path.expandvars(node.value)
-
-
-class EnvVarLoader(yaml.SafeLoader):
-    pass
-
-
-EnvVarLoader.add_implicit_resolver('!path', path_matcher, None)
-EnvVarLoader.add_constructor('!path', path_constructor)
-
-# _env = os.environ.get('CFG_ENV')
-_config_path = os.path.abspath(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir)) + 'configs.yml'
-conf_doc = yaml.load(open(_config_path), Loader=EnvVarLoader)
+# import re
+# import yaml
+#
+# path_matcher = re.compile(r'.*\$\{([^}^{]+)\}.*')
+#
+#
+# def path_constructor(loader, node):
+#     return os.path.expandvars(node.value)
+#
+#
+# class EnvVarLoader(yaml.SafeLoader):
+#     pass
+#
+#
+# EnvVarLoader.add_implicit_resolver('!path', path_matcher, None)
+# EnvVarLoader.add_constructor('!path', path_constructor)
+#
+# # _env = os.environ.get('CFG_ENV')
+# _config_path = os.path.abspath(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir)) + 'configs.yml'
+# conf_doc = yaml.load(open(_config_path), Loader=EnvVarLoader)
 # conf = conf_doc[_env]
+
+# 读取配置信息
+file_path = os.path.abspath(__file__)
+par_dir = os.path.dirname(file_path)
+conf_path = os.path.join(par_dir, 'etc', 'config.ini')
+conf_doc = configparser.ConfigParser()
+conf_doc.read(conf_path)
 
 from pydantic import BaseSettings
 
