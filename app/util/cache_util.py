@@ -1,6 +1,7 @@
-from app.settings import setting
+from app.settings import setting, conf_path
 import redis
 
+print("conf_path:" + conf_path)
 REDIS_CONNECT = redis.Redis(host=setting.REDIS_HOST, port=setting.REDIS_PORT, db=setting.REDIS_DATABASE)
 print(f"keys *:{REDIS_CONNECT.keys('*')}")
 

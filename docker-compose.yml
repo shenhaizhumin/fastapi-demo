@@ -2,6 +2,8 @@ version: "2"
 services:
   fastapi-study:
     image: fastapi-study:v1.0
+    volumes:
+      - ./shared:./logs
     build:
       context: /home/deploy/docker-compose-test/fastapi-study/
       dockerfile: Dockerfile
