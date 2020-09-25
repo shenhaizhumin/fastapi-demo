@@ -1,19 +1,16 @@
 from fastapi import APIRouter, Depends, Form, Query, Request
 from app.intercept import get_current_user
 from datetime import timedelta
-from app.settings import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.settings import setting
 from app.schema.login_schema import PasswordRequestForm, User
 from app.util.token_util import create_access_token
 from app.response import BaseResponse, BaseError
 from app.util.cache_util import Cache, create_user_data
-from app.settings import tokenUrl
 from app.models.user_info import UserInfo
 from app.models import get_db, Session
 from app.schema.user_schema import UserOutSchema, mobile_pattern, email_pattern
 import re
-from app.settings import pwd_context
 import datetime
-from app.settings import info_logger,redis_port,redis_host,redis_database,info_logger
 import json
 
 login_router = APIRouter()
@@ -25,9 +22,10 @@ async def get(x: str = Form(...)):
     return "hello world {}".format(x)
 
 
-@login_router.post(tokenUrl)
+@login_router.post(setting.TOKENURL)
 async def login(req: Request, schema: PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    info_logger.info(f"host:{redis_host},{type(redis_host)},port:{redis_port},{type(redis_port)},database:{redis_database},{type(redis_database)}")
+    setting.INFO_LOGGER.info(
+        f"host:{setting.REDIS_HOST},{type(setting.REDIS_HOST)},port:{setting.REDIS_PORT},{type(setting.REDIS_PORT)},database:{setting.REDIS_DATABASE},{type(setting.REDIS_DATABASE)}")
     username = schema.username
     if re.match(mobile_pattern, username):
         user = db.query(UserInfo).filter_by(mobile=username).first()
@@ -40,7 +38,7 @@ async def login(req: Request, schema: PasswordRequestForm = Depends(), db: Sessi
     # 密码校验
     try:
         password = schema.password
-        if not pwd_context.verify(password, user.password):
+        if not setting.pwd_context.verify(password, user.password):
             return BaseError(
                 msg="Incorrect password"
             )
@@ -50,7 +48,7 @@ async def login(req: Request, schema: PasswordRequestForm = Depends(), db: Sessi
         )
     user_data = create_user_data(user.username, user.uid)
     #  设置token 过期时间
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=setting.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data=user_data, expires_delta=access_token_expires)
     await cache.set_account_session(username=user.username, uid=user.uid, token=access_token)
     user.access_token = access_token

@@ -2,18 +2,17 @@ from fastapi import HTTPException, Depends, status
 import jwt
 from jwt import PyJWTError
 from app.response import BaseError
-from app.settings import SECRET_KEY, ALGORITHM, jwt_options, error_code
+from app.settings import setting
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.util.cache_util import Cache
-from app.settings import tokenUrl
 from app.models.user_info import UserInfo
 from app.models import get_db
 
-validate_credentials_code = error_code
+validate_credentials_code = setting.error_code
 
 cache = Cache()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=tokenUrl)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=setting.TOKENURL)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db=Depends(get_db)):
@@ -25,7 +24,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db=Depends(get_d
         code=validate_credentials_code,
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options=jwt_options)
+        payload = jwt.decode(token, setting.SECRET_KEY, algorithms=[setting.ALGORITHM], options=setting.JWT_OPTIONS)
         username = str(payload.get("username"))
         uid = str(payload.get('uid'))
         session = await cache.get_account_session(username=username, uid=uid)

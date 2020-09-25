@@ -8,7 +8,7 @@ from fastapi.responses import PlainTextResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.views.client_login import login_router
 from app.views.gank_api import gank_router
-from app.settings import error_code
+from app.settings import setting
 from app.views.user_views import user_router
 from app.views.upload_api import upload_router
 from app.views.moment_api import moment_router
@@ -18,7 +18,6 @@ import time
 from starlette.routing import Route, WebSocketRoute
 from app.views.ws_chat import Homepage, Echo
 # from app.settings import logger
-from app.settings import error_logger, info_logger
 
 # 6BD4-5C9C-D45A-0873 E656-416D-6C0E-1E53 6AA5-4BEF-8817-3D37 007C-D06A-712C-6823
 routes = [
@@ -64,12 +63,12 @@ import traceback
 
 @app.middleware('http')
 async def middleware(req: Request, call_next):
-    info_logger.info(f"scope:{req.scope}")
+    setting.INFO_LOGGER.info(f"scope:{req.scope}")
     start_time = time.time()
     try:
         resp = await call_next(req)
     except Exception as e:
-        error_logger.error(traceback.format_exc())
+        setting.ERROR_LOGGER.error(traceback.format_exc())
         return JSONResponse(content={'message': f"{e}", "code": -200})
     process_time = time.time() - start_time
     resp.headers['process-time'] = str(process_time)

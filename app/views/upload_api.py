@@ -1,6 +1,6 @@
 from fastapi import File, UploadFile, APIRouter, Depends
 from app.response import BaseError, BaseResponse
-from app.settings import image_dirname, domain_name
+from app.settings import setting
 from typing import List
 from app.models import get_db, Session
 import os.path
@@ -15,11 +15,11 @@ async def upload_file(file: UploadFile = File(..., alias='image_file'), db: Sess
     bys = await file.read()
     if not bys:
         raise BaseError(msg='missing file or file is empty')
-    file_path = image_dirname.format(filename=file.filename)
+    file_path = setting.IMAGE_DIRNAME.format(filename=file.filename)
     with open(file_path, 'wb') as f:
         f.write(bys)
     # 返回访问链接
-    image_url = domain_name.format(filepath=('/images/{}'.format(file.filename)))
+    image_url = setting.DOMAIN_NAME.format(filepath=('/images/{}'.format(file.filename)))
     file_entity = FileEntity(file_name=file.filename, file_path=file_path, file_url=image_url)
     db.add(file_entity)
     db.commit()
@@ -33,11 +33,11 @@ async def upload_files(file_list: List[UploadFile] = File(...), db: Session = De
         bys = await file.read()
         if not bys:
             raise BaseError(msg='missing file or file is empty')
-        file_path = image_dirname.format(filename=file.filename)
+        file_path = setting.IMAGE_DIRNAME.format(filename=file.filename)
         with open(file_path, 'wb') as f:
             f.write(bys)
         # 返回访问链接
-        image_url = domain_name.format(filepath=('/images/{}'.format(file.filename)))
+        image_url = setting.DOMAIN_NAME.format(filepath=('/images/{}'.format(file.filename)))
         file_entity = FileEntity(file_name=file.filename, file_path=file_path, file_url=image_url)
         db.add(file_entity)
         file_entities.append(file_entity)

@@ -5,7 +5,7 @@ from app.response import BaseResponse, BaseError
 from app.models import Session, get_db
 from app.schema.user_schema import UserUpdateSchema, UserInSchema, UserOutSchema
 from app.util import token_util
-from app.settings import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.settings import setting
 from app.util.cache_util import Cache
 from datetime import datetime, timedelta
 
@@ -35,7 +35,7 @@ async def register(req: Request, schema: UserInSchema, db: Session = Depends(get
         'username': user.username,
         'uid': user.uid
     }
-    access_token = token_util.create_access_token(data=user_data, expires_delta=timedelta(ACCESS_TOKEN_EXPIRE_MINUTES))
+    access_token = token_util.create_access_token(data=user_data, expires_delta=timedelta(setting.ACCESS_TOKEN_EXPIRE_MINUTES))
     await cache.set_account_session(user.username, user.uid, access_token)
     user.access_token = access_token
     # 更新登录时间

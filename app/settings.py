@@ -51,19 +51,9 @@ formatter = logging.Formatter(
 #
 # error_code = -200
 #
-jwt_options = {
-    'verify_signature': True,
-    'verify_exp': True,
-    'verify_nbf': False,
-    'verify_iat': True,
-    'verify_aud': False
-}
-#
 # test_db = dict()
 # for k in conf.options('db.test'):
 #     test_db[k] = conf.get('db.test', k)
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 import re
 import yaml
@@ -87,27 +77,38 @@ _config_path = os.path.abspath(os.path.join(os.path.abspath(os.path.dirname(__fi
 conf_doc = yaml.load(open(_config_path), Loader=EnvVarLoader)
 # conf = conf_doc[_env]
 
-log_dir = conf_doc['logging']['log_dir']
-info_logger = get_logger(get_path(log_dir, 'app_info.log'))
-error_logger = get_logger(get_path(log_dir, 'app_error.log'))
+from pydantic import BaseSettings
 
-image_dirname = conf_doc['file']['image_dirname']
-domain_name = conf_doc['file']['domain_name']
-redis_port = int(conf_doc['db.redis']['port'])
-redis_host = conf_doc['db.redis']['host']
-redis_database = int(conf_doc['db.redis']['db'])
-redis_connect = redis.Redis(host=redis_host, port=redis_port, db=redis_database)
-ACCESS_TOKEN_EXPIRE_MINUTES = int(conf_doc['jwt.extars']['expire_minutes'])
-SECRET_KEY = conf_doc['jwt.extars']['secret_key']
-ALGORITHM = conf_doc['jwt.extars']['algorithm']
-tokenUrl = '/login'
 
-db_uri = conf_doc['db.test']['db_uri']
-jwt_options = {
-    'verify_signature': True,
-    'verify_exp': True,
-    'verify_nbf': False,
-    'verify_iat': True,
-    'verify_aud': False
-}
-error_code = -200
+class Settings(BaseSettings):
+    class Config:
+        case_sensitive = True
+
+    LOG_DIR = conf_doc['logging']['log_dir']
+    INFO_LOGGER = get_logger(get_path(LOG_DIR, 'app_info.log'))
+    ERROR_LOGGER = get_logger(get_path(LOG_DIR, 'app_error.log'))
+
+    IMAGE_DIRNAME = conf_doc['file']['image_dirname']
+    DOMAIN_NAME = conf_doc['file']['domain_name']
+    REDIS_PORT = int(conf_doc['db.redis']['port'])
+    REDIS_HOST = conf_doc['db.redis']['host']
+    REDIS_DATABASE = int(conf_doc['db.redis']['db'])
+    REDIS_CONNECT = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DATABASE)
+    ACCESS_TOKEN_EXPIRE_MINUTES = int(conf_doc['jwt.extars']['expire_minutes'])
+    SECRET_KEY = conf_doc['jwt.extars']['secret_key']
+    ALGORITHM = conf_doc['jwt.extars']['algorithm']
+    TOKENURL = '/login'
+
+    DB_URI = conf_doc['db.test']['db_uri']
+    JWT_OPTIONS = {
+        'verify_signature': True,
+        'verify_exp': True,
+        'verify_nbf': False,
+        'verify_iat': True,
+        'verify_aud': False
+    }
+    error_code = -200
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+setting = Settings

@@ -8,19 +8,19 @@ import hmac
 from hashlib import sha1, sha256
 import bcrypt
 from datetime import datetime, timedelta
-from app.settings import SECRET_KEY, ALGORITHM,info_logger
+from app.settings import setting
 import jwt
 
 
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
-    info_logger.info(f"algorithm:{ALGORITHM},algorithm type:{type(ALGORITHM)}")
+    setting.INFO_LOGGER.info(f"algorithm:{setting.ALGORITHM},algorithm type:{type(setting.ALGORITHM)}")
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=60 * 24)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, setting.SECRET_KEY, algorithm=setting.ALGORITHM)
     return encoded_jwt.decode('utf8')
 
 
