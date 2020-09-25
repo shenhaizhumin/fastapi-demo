@@ -2,8 +2,6 @@ version: "2"
 services:
   fastapi-study:
     image: fastapi-study:v1.0
-    volumes:
-      - ./shared:./logs
     build:
       context: /home/deploy/docker-compose-test/fastapi-study/
       dockerfile: Dockerfile
@@ -38,7 +36,7 @@ services:
       DATABASE_URI: mysql://zengqi:123456@172.10.11.13:3306/test_db
     expose:
       - 8032
-      ports:
+    ports:
         - "8032:8032"
     command: java -jar /app.jar
     restart: on-failure
