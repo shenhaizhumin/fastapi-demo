@@ -39,7 +39,7 @@ file_path = os.path.abspath(__file__)
 par_dir = os.path.dirname(file_path)
 profile = os.environ.get('DEPLOY_ENVIRONMENT', 'local')
 if profile == 'remote':
-    config_name = 'remote_config.ini'
+    config_name = 'config_remote.ini'
 else:
     config_name = 'config.ini'
 conf_path = os.path.join(par_dir, 'config', config_name)
