@@ -3,6 +3,7 @@ import configparser
 import redis
 from passlib.context import CryptContext
 from app.util.log_util2 import get_path, get_logger
+from pydantic import BaseSettings
 
 # from fastapi.logger import logger
 # from logging.handlers import RotatingFileHandler
@@ -41,38 +42,37 @@ print("conf_path:" + conf_path)
 conf_doc = configparser.ConfigParser()
 conf_doc.read(conf_path)
 
-from pydantic import BaseSettings
-
 
 class Settings(BaseSettings):
-    class Config:
-        case_sensitive = True
-
-    LOG_DIR = conf_doc.get('logging', 'log_dir')
+    LOG_DIR: str = conf_doc.get('logging', 'log_dir')
     INFO_LOGGER = get_logger(get_path(LOG_DIR, 'app_info.log'))
     ERROR_LOGGER = get_logger(get_path(LOG_DIR, 'app_error.log'))
 
-    IMAGE_DIRNAME = conf_doc.get('file', 'image_dirname')
-    DOMAIN_NAME = conf_doc.get('file', 'domain_name')
-    REDIS_PORT = int(conf_doc.get('db.redis', 'port'))
-    REDIS_HOST = conf_doc.get('db.redis', 'host')
-    REDIS_DATABASE = int(conf_doc.get('db.redis', 'db'))
-    REDIS_CONNECT = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DATABASE)
-    ACCESS_TOKEN_EXPIRE_MINUTES = int(conf_doc.get('jwt.extars', 'expire_minutes'))
-    SECRET_KEY = conf_doc.get('jwt.extars', 'secret_key')
-    ALGORITHM = conf_doc.get('jwt.extars', 'algorithm')
-    TOKENURL = '/login'
+    IMAGE_DIRNAME: str = conf_doc.get('file', 'image_dirname')
+    DOMAIN_NAME: str = conf_doc.get('file', 'domain_name')
+    REDIS_PORT: int = int(conf_doc.get('db.redis', 'port'))
+    REDIS_HOST: str = conf_doc.get('db.redis', 'host')
+    REDIS_DATABASE: int = int(conf_doc.get('db.redis', 'db'))
+    # connect_pool = redis.Connection(host=REDIS_HOST, port=REDIS_PORT)
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(conf_doc.get('jwt.extars', 'expire_minutes'))
+    SECRET_KEY: str = conf_doc.get('jwt.extars', 'secret_key')
+    ALGORITHM: str = conf_doc.get('jwt.extars', 'algorithm')
+    TOKENURL: str = '/login'
 
-    DB_URI = conf_doc.get('db.test', 'db_uri')
-    JWT_OPTIONS = {
+    DB_URI: str = conf_doc.get('db.test', 'db_uri')
+    JWT_OPTIONS: dict = {
         'verify_signature': True,
         'verify_exp': True,
         'verify_nbf': False,
         'verify_iat': True,
         'verify_aud': False
     }
-    error_code = -200
+    error_code: int = -200
     pwd_context = CryptContext(schemes=("bcrypt"), deprecated="auto")
 
+    class Config:
+        case_sensitive = True
 
-setting = Settings
+
+setting = Settings()
+

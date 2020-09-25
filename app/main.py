@@ -80,7 +80,7 @@ async def http_exception_handler(request, exc):
     # logger.error(exc.detail)
     return JSONResponse(
         # status_code=exc.status_code,
-        content={"message": f"StarletteHTTPException:{exc.detail}", 'code': error_code},
+        content={"message": f"StarletteHTTPException:{exc.detail}", 'code': setting.error_code},
     )
 
 
@@ -89,7 +89,7 @@ async def validation_exception_handler(request, exc):
     # logger.error(exc)
     return JSONResponse(
         status_code=200,
-        content={"message": f"{str(exc)}", 'code': error_code},
+        content={"message": f"{str(exc)}", 'code': setting.error_code},
     )
 
 

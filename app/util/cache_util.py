@@ -1,11 +1,15 @@
 from app.settings import setting
+import redis
+
+REDIS_CONNECT = redis.Redis(host=setting.REDIS_HOST, port=setting.REDIS_PORT, db=setting.REDIS_DATABASE)
+print(f"keys *:{REDIS_CONNECT.keys('*')}")
 
 
 class Cache:
     @classmethod
     async def get_account_session(cls, username: str, uid: str):
         key = get_token_key(username, uid)
-        value = setting.REDIS_CONNECT.get(key)
+        value = REDIS_CONNECT.get(key)
         if not value:
             return None
         return value.decode()
@@ -13,11 +17,11 @@ class Cache:
     @classmethod
     async def set_account_session(cls, username: str, uid: str, token: str):
         key = get_token_key(username, uid)
-        return setting.REDIS_CONNECT.set(key, token)
+        return REDIS_CONNECT.set(key, token)
 
     @classmethod
     async def delete_account_session(cls, username: str, uid: str):
-        setting.REDIS_CONNECT.delete(get_token_key(username, uid))
+        REDIS_CONNECT.delete(get_token_key(username, uid))
 
 
 def get_token_key(username: str, uid: str):
