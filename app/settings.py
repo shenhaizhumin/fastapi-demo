@@ -37,7 +37,12 @@ formatter = logging.Formatter(
 # 读取配置信息
 file_path = os.path.abspath(__file__)
 par_dir = os.path.dirname(file_path)
-conf_path = os.path.join(par_dir, 'config', 'config.ini')
+profile = os.environ.get('DEPLOY_ENVIRONMENT', 'local')
+if profile == 'remote':
+    config_name = 'remote_config.ini'
+else:
+    config_name = 'config.ini'
+conf_path = os.path.join(par_dir, 'config', config_name)
 print("conf_path:" + conf_path)
 conf_doc = configparser.ConfigParser()
 conf_doc.read(conf_path)
@@ -75,4 +80,3 @@ class Settings(BaseSettings):
 
 
 setting = Settings()
-

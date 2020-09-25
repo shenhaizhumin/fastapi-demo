@@ -17,6 +17,8 @@ services:
       ALGORITHM: HS256
       EXPIRE_MINUTES: 30
       SECRET_KEY: abcdefg
+
+      DEPLOY_ENVIRONMENT: remote
     expose:
       - 8031
     ports:
@@ -34,7 +36,7 @@ services:
       DATABASE_URI: mysql://zengqi:123456@172.10.11.13:3306/test_db
     expose:
       - 8032
-     ports:
-      - "8032:8032"
+      ports:
+        - "8032:8032"
     command: java -jar /app.jar
     restart: on-failure
