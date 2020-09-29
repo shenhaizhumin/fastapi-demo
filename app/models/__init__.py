@@ -13,18 +13,14 @@ Base = declarative_base(bind=engine)
 # 建表
 # Base.metadata.create_all(bind=engine)
 Session = sessionmaker(bind=engine)
-session = Session()
 
 
-def get_db_session():
-    return session
+# session = Session()
 
 
 def get_db():
     try:
+        session = Session()
         yield session
     finally:
         session.close()
-
-
-db_session = get_db_session()

@@ -3,7 +3,7 @@ import configparser
 import redis
 from passlib.context import CryptContext
 from app.util.log_util2 import get_path, get_logger
-from pydantic import BaseSettings
+from pydantic import BaseSettings, Field
 
 # from fastapi.logger import logger
 # from logging.handlers import RotatingFileHandler
@@ -63,6 +63,10 @@ class Settings(BaseSettings):
     SECRET_KEY: str = conf_doc.get('jwt.extars', 'secret_key')
     ALGORITHM: str = conf_doc.get('jwt.extars', 'algorithm')
     TOKENURL: str = '/login'
+
+    TEST_EXTRAS = conf_doc.get('jwt.extars', 'test_extras')
+    INFO_LOGGER.info("environment-->TEST_EXTRAS:" + str(os.environ.get("TEST_EXTRAS")))
+    INFO_LOGGER.info("TEST_EXTRAS:" + str(TEST_EXTRAS))
 
     DB_URI: str = conf_doc.get('db.test', 'db_uri')
     JWT_OPTIONS: dict = {
